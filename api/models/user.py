@@ -2,6 +2,11 @@ from dataclasses import dataclass
 
 @dataclass
 class User:
-    id: int
-    username: str
-    email: str
+    id: int = None
+    username: str = None
+    email: str = None
+    password: str = None
+    role: Role = None
+    last_login_at: int = None
+    created_at: int = None
+    updated_at: int = None
