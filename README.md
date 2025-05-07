@@ -56,8 +56,6 @@ WTForms==3.2.1
      - `MYSQL_USER`: MySQL username
      - `MYSQL_PASSWORD`: MySQL password
      - `MYSQL_DB`: Database name
-     - `FLASK_ENV`: Flask environment (development/production)
-     - `FLASK_DEBUG`: Debug mode (1/0)
 
 5. Set up the MySQL database using the `database.sql` file.
 
