@@ -18,31 +18,23 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse" id="navbarNav"> 
                 <ul class="navbar-nav ms-auto">
-                    {% if session.get('user_id') %}
-                        {% if session.get('role') == 'admin' %} 
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.home') }}">Home</a>
+                    </li>
+                    {% if 'user_id' in session %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+                        </li>
+                        {% if session['role'] == 'admin' %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('user.admin_page') }}">
-                                    <i class="fas fa-tachometer-alt me-1"></i>Management
-                                </a>
+                                <a class="nav-link" href="{{ url_for('admin.home') }}">Admin</a>
                             </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('user.order_page') }}">
-                                <i class="fas fa-box me-1"></i>Orders
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.logout') }}">
-                                <i class="fas fa-sign-out-alt me-1"></i>Logout
-                            </a>
-                        </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.login_page') }}">
-                                <i class="fas fa-sign-in-alt me-1"></i>Login
-                            </a>
+                            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
                         </li>
                     {% endif %}
                 </ul>

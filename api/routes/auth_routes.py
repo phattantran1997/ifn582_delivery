@@ -1,24 +1,24 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session, render_template
 from ..services.auth_service import AuthService
 from .base_routes import BaseRoute 
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 auth_route = BaseRoute(AuthService)
 
-@auth_bp.route('/login', methods=['GET','POST'])
+@auth_bp.route('/login', methods=['POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('login.html')
     data = request.get_json()
     user = auth_route.service.login(data)
     session['user_id'] = user['id']
     session['role'] = user['role']
+    return jsonify({'status': 'success', 'message': 'Login successful', 'data': user}), 200
+
+@auth_bp.route('/login', methods=['GET'])
+def login_page():
     return render_template('login.html')
 
-@auth_bp.route('/register', methods=['GET','POST'])
+@auth_bp.route('/register', methods=['POST'])
 def register():
-    if request.method == 'GET':
-        return render_template('register.html')
     data = request.get_json()
     user = auth_route.service.register(data)
     return jsonify({'status': 'success', 'message': 'Register successful', 'data': user}), 200
