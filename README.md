@@ -3,6 +3,7 @@
 This is a simple web application for a delivery service using Flask and MySQL.
 
 ## Requirements
+```
 blinker==1.9.0
 Bootstrap-Flask==2.4.1
 click==8.1.8
@@ -24,7 +25,7 @@ typing_extensions==4.12.2
 visitor==0.1.3
 Werkzeug==3.1.3
 WTForms==3.2.1
-
+```
 
 ## Setup
 
@@ -47,6 +48,7 @@ WTForms==3.2.1
    ```bash
    pip install -r requirements.txt
    ```
+   > note: if you get an error about mysqlclient, try running `sudo apt install default-libmysqlclient-dev pkg-config` first on Ubuntu, or `brew install mysql pkg-config` on macOS.
 
 4. Configure environment:
    - Copy `example.env` to `.env`
