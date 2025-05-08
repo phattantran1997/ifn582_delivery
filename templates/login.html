@@ -1,0 +1,97 @@
+{% extends "index.html" %}
+
+{% block title %}Login / Register{% endblock %}
+
+{% block styles %}
+<style>
+    body {
+        background-color: #f8f9fa;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .auth-container {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 400px;
+    }
+    .brand {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .error-message {
+        color: #dc3545;
+        margin-bottom: 1rem;
+        display: none;
+    }
+    .form-container {
+        transition: opacity 0.3s ease-in-out;
+    }
+    .toggle-form {
+        cursor: pointer;
+        color: #0d6efd;
+    }
+    .toggle-form:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container center">
+    <div class="auth-container">
+        <div class="brand">
+            <h2 id="form-title">Welcome Back</h2>
+            <p class="text-muted" id="form-subtitle">Please login to your account</p>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div id="error-message" class="error-message"></div>
+
+        <!-- Login Form -->
+        <form id="login-form" class="form-container">
+            <div class="mb-3">
+                <label for="login-email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="login-email" required>
+            </div>
+            <div class="mb-3">
+                <label for="login-password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="login-password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
+            <p class="text-center">Don't have an account? <span class="toggle-form" onclick="toggleForm()">Register</span></p>
+        </form>
+
+        <!-- Register Form -->
+        <form id="register-form" class="form-container" style="display: none;">
+            <div class="mb-3">
+                <label for="register-username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="register-username" required>
+            </div>
+            <div class="mb-3">
+                <label for="register-email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="register-email" required>
+            </div>
+            <div class="mb-3">
+                <label for="register-password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="register-password" required>
+            </div>
+            <div class="mb-3">
+                <label for="confirm-password" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="confirm-password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mb-3">Register</button>
+            <p class="text-center">Already have an account? <span class="toggle-form" onclick="toggleForm()">Login</span></p>
+        </form>
+    </div>
+</div>
+{% endblock %}
