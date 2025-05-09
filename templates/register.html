@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block styles %}
+<style>
+    .form-signup {
+        width: 100%;
+        max-width: 330px;
+        margin: auto;
+    }
+    .error-message {
+        color: #dc3545;
+        margin-bottom: 1rem;
+        display: none;
+    }
+    .form-floating .form-control {
+        border-radius: 0;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<main class="mt-5">
+    <!-- Register Form -->
+    <form id="register-form" action="{{ url_for('auth.register') }}" method="POST" class="form-signup py-5 px-4">
+        <img id="logo" class="mb-2 w-50 d-block mx-auto" src="{{ url_for('static', filename='images/logo.png') }}" alt="Store Logo">
+        <p class="text-muted text-center mb-3">Please fill up the form to register</p> 
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        <div class="form-floating">
+            <input type="text" name="username" class="form-control border-bottom-0 rounded-top" id="floatingUsername" placeholder="Username" required>
+            <label for="floatingUsername">Username</label>
+        </div>
+        <div class="form-floating">
+            <input type="email" name="email" class="form-control border-bottom-0" id="floatingEmail" placeholder="Email" required>
+            <label for="floatingEmail">Email</label>
+        </div>
+        <div class="form-floating">
+            <input type="password" name="password" class="form-control border-bottom-0" id="floatingPassword" placeholder="Password" required>
+            <label for="floatingPassword">Password</label>
+        </div>
+        <div class="form-floating mb-4">
+            <input type="password" name="confirm_password" class="form-control rounded-bottom" id="floatingConfirmPassword" placeholder="Confirm Password" required>
+            <label for="floatingConfirmPassword">Confirm Password</label>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 mb-3">Register</button>
+        <p class="text-center">Already have an account?
+            <a href="{{ url_for('auth.login_page') }}">Login</a>
+        </p>
+    </form>
+</main>
+{% endblock %}

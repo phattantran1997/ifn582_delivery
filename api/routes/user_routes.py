@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
-from ..services.user_service import UserService
-from .base_routes import BaseRoute
+from api.services.user_service import UserService
+from api.routes.base_routes import BaseRoute
 
 user_bp = Blueprint('user', __name__, url_prefix='/api/users')
 user_route = BaseRoute(UserService)

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, render_template
 from utils.mysql_init import MySQLManager
 
 class BaseRoute:
@@ -10,4 +10,9 @@ class BaseRoute:
     def service(self):
         if self._service is None:
             self._service = self.service_class()
-        return self._service 
+        return self._service
+
+main_bp = Blueprint('main', __name__)
+@main_bp.route('/')
+def home():
+    return render_template('index.html')

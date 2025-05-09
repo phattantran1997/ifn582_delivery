@@ -6,6 +6,6 @@ class Shipment:
     id: int = None
     address: str = None
     phone: str = None
-    shipment_method: ShipmentMethod = None
+    shipment_method: ShippingMethod = None
     created_at: int = None
     updated_at: int = None
