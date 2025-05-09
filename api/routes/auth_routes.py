@@ -7,13 +7,12 @@ auth_route = BaseRoute(AuthService)
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    print("form", request.form)
     user = auth_route.service.login(request.form)
     if not user:
-        return jsonify({'status': 'error', 'message': 'User not found'}), 404
+        return render_template('login.html', error='Invalid email or password')
 
-    session['user_id'] = user['id']
-    session['role'] = user['role']
+    session['user_id'] = user.id
+    session['role'] = user.role
     print(session)
     return render_template('index.html')
 

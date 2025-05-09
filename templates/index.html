@@ -16,7 +16,9 @@
                     </li>
                     {% if 'user_id' in session %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+                            <form action="{{ url_for('auth.logout') }}" method="POST">
+                                <button type="submit" class="nav-link">Logout</button>
+                            </form>
                         </li>
                         {% if session['role'] == 'admin' %}
                             <li class="nav-item">

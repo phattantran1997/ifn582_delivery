@@ -21,16 +21,15 @@ class AuthService(BaseService):
             cur.close()
 
             if row:
-                return User(**{
-                    'id': row[0],
-                    'username': row[1],
-                    'email': row[2],
-                    'password': row[3],
-                    'role': Role(id=row[4], name=row[5]),
-                    'last_login_at': row[6],
-                    'created_at': row[7],
-                    'updated_at': row[8],
-                })
+                return User(id=row[0],
+                    username=row[1],
+                    email=row[2],
+                    password=row[3],
+                    last_login_at=row[4],
+                    created_at=row[5],
+                    updated_at=row[6],
+                    role=Role(id=row[7], name=row[8]),
+                )
 
             return None
         except Exception as e:
