@@ -35,15 +35,15 @@
     {% endwith %}
     <div id="error-message" class="error-message"></div>
     <!-- Login Form -->
-    <form id="login-form" class="form-signin py-5 px-4" >
+    <form id="login-form" action="{{ url_for('auth.login') }}" method="POST" class="form-signin py-5 px-4" >
         <img id="logo" class="mb-2 w-50 d-block mx-auto" src="{{ url_for('static', filename='images/logo.png') }}" alt="Store Logo">
         <p class="text-muted text-center mb-3">Please login to your account</p> 
         <div class="form-floating">
-            <input type="email" class="form-control rounded-top border-bottom-0" id="floatingEmail" placeholder="name@example.com">
+            <input type="email" name="email" class="form-control rounded-top border-bottom-0" id="floatingEmail" placeholder="name@example.com">
             <label for="floatingEmail">Email address</label>
         </div>
         <div class="form-floating mb-4">
-            <input type="password" class="form-control rounded-bottom" id="floatingPassword" placeholder="Password">
+            <input type="password" name="password" class="form-control rounded-bottom" id="floatingPassword" placeholder="Password">
             <label for="floatingPassword">Password</label>
         </div> 
         <button type="submit" class="btn btn-primary w-100 mb-3">Sign in</button>
@@ -51,21 +51,21 @@
     </form>
 
     <!-- Register Form -->
-    <form id="register-form" class="form-container" style="display: none;">
+    <form id="register-form" action="{{ url_for('auth.register') }}" method="POST" class="form-container" style="display: none;">
         <div class="form-floating">
-            <input type="text" class="form-control" id="register-username" required>
+            <input type="text" name="username" class="form-control" id="register-username" required>
             <label for="register-username">Username</label>
         </div>
         <div class="form-floating">
-            <input type="email" class="form-control" id="register-email" required>
+            <input type="email" name="email" class="form-control" id="register-email" required>
             <label for="register-email">Email</label>
         </div>
         <div class="form-floating">
-            <input type="password" class="form-control" id="register-password" required>
+            <input type="password" name="password" class="form-control" id="register-password" required>
             <label for="register-password">Password</label>
         </div>
         <div class="form-floating">
-            <input type="password" class="form-control" id="confirm-password" required>
+            <input type="password" name="confirm_password" class="form-control" id="confirm-password" required>
             <label for="confirm-password">Confirm Password</label>
         </div>
         <button type="submit" class="btn btn-primary w-100 mb-3">Register</button>
