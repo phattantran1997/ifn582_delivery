@@ -5,6 +5,16 @@ from api.models.user import User
 from api.services.base_service import BaseService
 
 class AuthService(BaseService):
+    def exist(self, email):
+        try:
+            cur = self.get_cursor()
+            cur.execute("SELECT * FROM users WHERE email = (%s);", (email,))
+            row = cur.fetchone()
+            cur.close()
+            return row is not None
+        except Exception as e:
+            raise Exception(f"Database error: {str(e)}")
+
     def login(self, data):
         try:
             cur = self.get_cursor()
@@ -13,9 +23,12 @@ class AuthService(BaseService):
                 SELECT 
                     u.id, u.username, u.email, u.password, u.last_login_at, u.created_at, u.updated_at,
                     r.id AS role_id, r.name AS role_name
-                FROM users u
-                JOIN roles r ON u.role_id = r.id
-                WHERE u.email = (%s);
+                FROM
+                    users u
+                JOIN
+                    roles r ON u.role_id = r.id
+                WHERE
+                    u.email = (%s);
             """, (data['email'],))
             row = cur.fetchone()
             cur.close()
@@ -39,16 +52,17 @@ class AuthService(BaseService):
         password_hash = self.hash_password(data['password'])
         try:
             cur = self.get_cursor()
-            cur.execute(
-                "INSERT INTO users (email, password) VALUES (%s, %s);",
-                (data['email'], password_hash)
+            cur.execute("INSERT INTO users (email, username, password) VALUES (%s, %s, %s)",
+                (data['email'], data['username'], password_hash)
             )
-            self.mysql.connection.commit()
+            user = User(id=cur.lastrowid)
+            cur.connection.commit()
             cur.close()
-
-            return User(**data)
+            return user
         except Exception as e:
+            cur.connection.rollback()
             raise Exception(f"Database error: {str(e)}")
+
 
     def hash_password(self, password):
         return hashlib.sha256(password.encode()).hexdigest()
