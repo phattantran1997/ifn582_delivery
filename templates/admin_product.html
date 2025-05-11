@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Add Product{% endblock %}
+{% block navbar %}
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('main.home') }}">
+                <i class="fas fa-truck me-2"></i>IFN582 Delivery
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav"> 
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.home') }}">Home</a>
+                    </li>
+                    {% if 'user_id' in session %}
+                        <li class="nav-item">
+                            <form action="{{ url_for('auth.logout') }}" method="POST">
+                                <button type="submit" class="nav-link">Logout</button>
+                            </form>
+                        </li>
+                        {% if session['role'] == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.home') }}">Admin</a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+{% block styles %}
+<style>
+    .form-label {
+        font-weight: 500;
+        color: #344054;
+    }
+    .preview-image {
+        max-width: 200px;
+        max-height: 200px;
+        object-fit: cover;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container w-50">
+    <div class="py-4 w-100">
+        <div class="d-flex justify-content-between align-items-center mb-3 p-1">
+            <div>
+                {% if product %}
+                    <h4 class="mb-1">Edit Product</h4>
+                {% else %}
+                    <h4 class="mb-1">Add Product</h4>
+                {% endif %}
+            </div>
+        </div>
+        {% if product %}
+            <form action="{{ url_for('admin.update_product', id=product.id) }}" method="POST" enctype="multipart/form-data" class="border shadow-sm w-100 p-4">
+        {% else %}
+            <form action="{{ url_for('admin.add_new_product') }}" method="POST" enctype="multipart/form-data" class="border shadow-sm w-100 p-4">
+        {% endif %}
+            <div class="row g-4">
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Product Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ product.name if product else '' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category_id" required>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if product and product.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Price ($)</label>
+                        <input type="number" class="form-control" id="price" name="price" value="{{ product.price if product else '' }}" step="0.01" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="4">{{ product.description if product else '' }}</textarea>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Product Image</label>
+                        <input type="file" class="form-control" id="image" name="image" accept="image/*" >
+                        <img id="preview" class="mt-2 d-flex w-100" src="{{url_for('static', filename='images/placeholder.png')}}">
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button type="submit" class="btn btn-primary">{% if product %}Update{% else %}Add{% endif %} Product</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    document.getElementById('image').addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('preview');
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock %}
