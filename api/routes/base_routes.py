@@ -16,3 +16,9 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/')
 def home():
     return render_template('index.html')
+@main_bp.route('/track-order')
+def track_order():
+    return render_template('tracking.html')
+@main_bp.route('/cart')
+def cart():
+    return render_template('cart.html')

@@ -14,7 +14,18 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('main.home') }}">Home</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.track_order') }}">
+                            <i class="fas fa-map-marker-alt me-1"></i>Track Order
+                        </a>
+                    </li>
                     {% if 'user_id' in session %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.cart') }}">
+                                <i class="fas fa-shopping-cart me-1"></i>Cart
+                            </a>
+                        </li>
+                       
                         <li class="nav-item">
                             <form action="{{ url_for('auth.logout') }}" method="POST">
                                 <button type="submit" class="nav-link">Logout</button>
