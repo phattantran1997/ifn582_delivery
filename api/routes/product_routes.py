@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
-from ..services.product_service import ProductService
-from .base_routes import BaseRoute
+from api.services.product_service import ProductService
+from api.routes.base_routes import BaseRoute
 
 product_bp = Blueprint('product', __name__, url_prefix='/api/products')
 product_route = BaseRoute(ProductService)

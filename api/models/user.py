@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from api.models.role import Role
 
 @dataclass
 class User:

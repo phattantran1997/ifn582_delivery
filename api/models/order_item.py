@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from api.models.product import Product
 
 @dataclass
 class OrderItem:
