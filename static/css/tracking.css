@@ -1,0 +1,153 @@
+.tracking-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.tracking-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.tracking-form {
+    background-color: #f8f9fa;
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.tracking-results {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.tracking-step {
+    display: flex;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.step-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    z-index: 2;
+}
+
+.step-icon.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.step-time {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.step-description {
+    margin-top: 0.5rem;
+}
+
+.step-line {
+    position: absolute;
+    left: 25px;
+    top: 50px;
+    bottom: -25px;
+    width: 2px;
+    background-color: #e9ecef;
+    z-index: 1;
+}
+
+.tracking-step:last-child .step-line {
+    display: none;
+}
+
+.map-container {
+    height: 300px;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.map-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vehicle-marker {
+    position: absolute;
+    top: 45%;
+    left: 35%;
+    width: 30px;
+    height: 30px;
+    background-color: #0d6efd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.3);
+}
+
+.destination-marker {
+    position: absolute;
+    top: 30%;
+    left: 65%;
+    width: 30px;
+    height: 30px;
+    background-color: #dc3545;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.3);
+}
+
+.delivery-info {
+    margin-bottom: 1.5rem;
+}
+
+.delivery-info-item {
+    margin-bottom: 1rem;
+}
+
+.delivery-info-label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.contact-driver {
+    border-radius: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: block;
+} 
