@@ -1,20 +1,27 @@
 from api.services.base_service import BaseService
+from api.models.category import Category
+from api.models.product import Product
 
 class ProductService(BaseService):
     def get_all_products(self):
         try:
             cur = self.get_cursor()
-            cur.execute("SELECT * FROM products")
+            cur.execute("""
+                SELECT p.id, p.name, p.price, p.category_id, c.name AS category_name
+                FROM products p
+                JOIN categories c ON p.category_id = c.id
+                ORDER BY p.id
+            """)
             products = cur.fetchall()
             cur.close()
 
             return [
-                {
-                    'id': row[0],
-                    'name': row[1],
-                    'price': float(row[2]),
-                    'category_id': row[3]
-                }
+                Product(
+                    id=row[0],
+                    name=row[1],
+                    price=float(row[2]),
+                    category=Category(id=row[3], name=row[4])
+                )
                 for row in products
             ]
         except Exception as e:
@@ -23,19 +30,24 @@ class ProductService(BaseService):
     def get_product_by_id(self, id: int):
         try:
             cur = self.get_cursor()
-            cur.execute("SELECT * FROM products WHERE id = %s", (id,))
-            product = cur.fetchone()
+            cur.execute("""
+                SELECT p.id, p.name, p.price, p.category_id, c.name AS category_name
+                FROM products p
+                JOIN categories c ON p.category_id = c.id
+                WHERE p.id = %s
+            """, (id,))
+            row = cur.fetchone()
             cur.close()
 
-            if product is None:
+            if row is None:
                 raise Exception("Product not found")
 
-            return {
-                'id': product[0],
-                'name': product[1],
-                'price': float(product[2]),
-                'category_id': product[3]
-            }
+            return Product(
+                id=row[0],
+                name=row[1],
+                price=float(row[2]),
+                category=Category(id=row[3], name=row[4])
+            )
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
 
@@ -63,7 +75,8 @@ class ProductService(BaseService):
         try:
             cur = self.get_cursor()
             cur.execute("SELECT * FROM products WHERE id = %s", (id,))
-            if not cur.fetchone():
+            row = cur.fetchone()
+            if row is None:
                 cur.close()
                 raise Exception("Product not found")
 
@@ -92,7 +105,8 @@ class ProductService(BaseService):
         try:
             cur = self.get_cursor()
             cur.execute("SELECT * FROM products WHERE id = %s", (id,))
-            if not cur.fetchone():
+            row = cur.fetchone()
+            if row is None:
                 cur.close()
                 raise Exception("Product not found")
 
@@ -100,5 +114,19 @@ class ProductService(BaseService):
             self.mysql.connection.commit()
             cur.close()
             return True
+        except Exception as e:
+            raise Exception(f"Database error: {str(e)}")
+
+    def get_categories(self):
+        try:
+            cur = self.get_cursor()
+            cur.execute("SELECT * FROM categories")
+            categories = cur.fetchall()
+            cur.close()
+
+            return [
+                Category(id=row[0], name=row[1])
+                for row in categories
+            ]
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")

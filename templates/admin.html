@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block navbar %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('main.home') }}">
+                <i class="fas fa-truck me-2"></i>IFN582 Delivery
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav"> 
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.home') }}">Home</a>
+                    </li>
+                    {% if 'user_id' in session %}
+                        <li class="nav-item">
+                            <form action="{{ url_for('auth.logout') }}" method="POST">
+                                <button type="submit" class="nav-link">Logout</button>
+                            </form>
+                        </li>
+                        {% if session['role'] == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.home') }}">Admin</a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+{% block styles %}
+<style>
+    .table th {
+        padding: 25px;
+    }
+    .table td {
+        vertical-align: middle;
+        padding: 20px; 
+    }
+    .thumbnail {
+        width: 75px;
+        height: auto;
+        object-fit: cover;
+    }
+    .badge {
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    .status-success {
+        background-color: #e7f4ee;
+        color: #0a6634;
+    }
+    .status-warning {
+        background-color: #fff4e5;
+        color: #945d00;
+    }
+    .status-info {
+        padding: 6px 12px;
+        background-color: #f8f9fa;
+        color: #515354;
+        border: 1px solid #dee2e6;
+    }
+    .text-muted {
+        color: #6c757d !important;
+        font-size: 0.9rem;
+    }
+    .btn-icon {
+        background: none;
+        border: none;
+    }
+    .btn-icon:hover {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="container py-4 m-auto w-75">
+        <div class="d-flex justify-content-between align-items-center mb-3 p-1">
+            <div>
+                <h4 class="mb-1">Products</h4>
+                <div class="text-muted">Showing {{ products|length }} products</div>
+            </div>
+            <a href="{{ url_for('admin.add_product_page') }}" class="btn btn-primary rounded-1">+ Add Product</a>
+        </div>
+        
+        <div class="border shadow-sm">
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class=><div class="ms-5">Product Info</div></th>
+                            <th class=>Price</th>
+                            <th class=>Category</th>
+                            <th class=>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td style="min-width: 100px;">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-2">
+                                        <form action="{{ url_for('admin.delete_product', id=product.id) }}" method="POST">
+                                            <button type="submit" class="btn-icon">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                        <button type="submit" class="btn-icon">
+                                            <a href="{{ url_for('admin.add_product_page', id=product.id) }}" class="bi bi-pencil-square"></a>
+                                        </button>
+                                    </div>
+                                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Product Image" class="thumbnail me-3">
+                                    <div>
+                                        <div class="fw-semibold">{{ product.name }}</div>
+                                        <div class="text-muted">ID: {{ product.id }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${{ "%.2f"|format(product.price) }}</td>
+                            <td><div class="badge status-info rounded-1 fw-semibold">{{ product.category.name }}</div></td>
+                            <td>
+                                <span class="badge rounded-pill status-success">Active</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
