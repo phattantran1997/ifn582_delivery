@@ -68,7 +68,7 @@
                             <div class="cart-item mb-3 pb-3 border-bottom">
                                 <div class="row align-items-center">
                                     <div class="col-md-2">
-                                        <img src="{{ url_for('static', filename='images/product/' + item.image) }}" class="img-fluid rounded" alt="{{ item.name }}">
+                                        <img src="{{ url_for('static', filename='images/product/' + item.product.image) }}" class="img-fluid rounded" alt="{{ item.product.name }}">
                                     </div>
                                     <div class="col-md-4">
                                         <h5 class="mb-1">{{ item.name }}</h5>
@@ -103,20 +103,20 @@
                             <h5 class="card-title">Order Summary</h5>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Subtotal</span>
-                                <span>${{ "%.2f"|format(subtotal) }}</span>
+                                <span>${{ subtotal }}</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Shipping</span>
-                                <span>${{ "%.2f"|format(shipping) }}</span>
+                                <span>${{ shipping }}</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Tax</span>
-                                <span>${{ "%.2f"|format(tax) }}</span>
+                                <span>${{ tax }}</span>
                             </div>
                             <hr>
                             <div class="d-flex justify-content-between mb-3">
                                 <strong>Total</strong>
-                                <strong>${{ "%.2f"|format(total) }}</strong>
+                                <strong>${{ total }}</strong>
                             </div>
                             <a href="{{ url_for('main.checkout') }}" class="btn btn-primary w-100">Proceed to Checkout</a>
                         </div>

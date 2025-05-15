@@ -135,3 +135,13 @@ INSERT INTO shipping_methods (name, description, fee) VALUES
 ('Express Shipping', 'Express shipping method', 10.99),
 ('Free Shipping', 'Free shipping method', 0),
 ('Bike Shipping', 'Bike shipping method', 2.99);
+
+# create carts and cart_items
+INSERT INTO carts (user_id, status) VALUES 
+(1, 'active'),
+(2, 'active');
+
+INSERT INTO cart_items (cart_id, product_id, quantity, price) VALUES 
+(1, 1, 2, 12.99),
+(1, 2, 1, 3.99),
+(2, 3, 3, 5.99);

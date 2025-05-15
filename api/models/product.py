@@ -6,4 +6,5 @@ class Product:
     id: int = None
     name: str = None
     price: float = None
+    image: str = ""
     category: Category = None
