@@ -122,8 +122,8 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES
 (1, 1);
 
 INSERT INTO users (username, email, password, role_id) VALUES 
-('John Doe', 'john@example.com', 'password', 1),
-('Jane Smith', 'jane@example.com', 'password', 2);
+('admin', 'admin@example.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 1),
+('user1', 'user1@example.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 2);
 
 INSERT INTO products (name, price, category_id) VALUES 
 ('Pizza', 12.99, 1), 
