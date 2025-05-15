@@ -8,3 +8,4 @@ class Product:
     price: float = None
     image: str = ""
     category: Category = None
+    description: str = ""
