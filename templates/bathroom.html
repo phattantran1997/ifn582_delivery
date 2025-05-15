@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Bathroom Supplies - IFN582 Delivery{% endblock %}
+
+{% block styles %}
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+<!-- Custom CSS -->
+<link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/bathroom.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('main.home') }}">
+                <i class="fas fa-truck me-2"></i>IFN582 Delivery
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.cleaning') }}">Cleaning</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.kitchen') }}">Kitchen</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('main.bathroom') }}">Bathroom</a>
+                    </li>
+                    {% if 'user_id' in session %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.cart') }}">
+                                <i class="fas fa-shopping-cart me-1"></i>Cart
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.track_order') }}">
+                                <i class="fas fa-map-marker-alt me-1"></i>Track Order
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <form action="{{ url_for('auth.logout') }}" method="POST">
+                                <button type="submit" class="nav-link">Logout</button>
+                            </form>
+                        </li>
+                        {% if session['role'] == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.home') }}">Admin</a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+                <form class="d-flex" id="searchForm">
+                    <input class="form-control me-2" type="search" placeholder="Search items..." id="searchInput">
+                    <button class="btn btn-outline-light" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container mt-4">
+        <!-- Categories Filter -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3>Bathroom Categories</h3>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-primary active" data-category="all">All</button>
+                    <button type="button" class="btn btn-outline-primary" data-category="cleaning">Cleaning</button>
+                    <button type="button" class="btn btn-outline-primary" data-category="accessories">Accessories</button>
+                    <button type="button" class="btn btn-outline-primary" data-category="storage">Storage</button>
+                    <button type="button" class="btn btn-outline-primary" data-category="personal">Personal Care</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="row" id="products-grid">
+            <!-- Product Card 1 -->
+            <div class="col-md-4 mb-4 product-item" data-category="cleaning" data-name="bathroom cleaner">
+                <div class="card bathroom-product-card">
+                    <img src="{{ url_for('static', filename='images/product/product-1.png') }}" class="card-img-top bathroom-product-image" alt="Bathroom Cleaner">
+                    <div class="card-body">
+                        <h5 class="card-title bathroom-product-title">Bathroom Cleaner & Disinfectant</h5>
+                        <p class="card-text bathroom-product-description">24oz spray bottle, kills 99.9% of germs</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0 bathroom-product-price">$8.99</span>
+                            <button class="btn btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Card 2 -->
+            <div class="col-md-4 mb-4 product-item" data-category="accessories" data-name="shower caddy">
+                <div class="card bathroom-product-card">
+                    <img src="{{ url_for('static', filename='images/product/product-2.png') }}" class="card-img-top bathroom-product-image" alt="Shower Caddy">
+                    <div class="card-body">
+                        <h5 class="card-title bathroom-product-title">Stainless Steel Shower Caddy</h5>
+                        <p class="card-text bathroom-product-description">Rust-resistant, adjustable shelves</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0 bathroom-product-price">$24.99</span>
+                            <button class="btn btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Card 3 -->
+            <div class="col-md-4 mb-4 product-item" data-category="storage" data-name="bathroom organizer">
+                <div class="card bathroom-product-card">
+                    <img src="{{ url_for('static', filename='images/product/product-3.png') }}" class="card-img-top bathroom-product-image" alt="Bathroom Organizer">
+                    <div class="card-body">
+                        <h5 class="card-title bathroom-product-title">Over-the-Door Organizer</h5>
+                        <p class="card-text bathroom-product-description">8 pockets, clear view design</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0 bathroom-product-price">$19.99</span>
+                            <button class="btn btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Card 4 -->
+            <div class="col-md-4 mb-4 product-item" data-category="personal" data-name="bath mat">
+                <div class="card bathroom-product-card">
+                    <img src="{{ url_for('static', filename='images/product/product-4.png') }}" class="card-img-top bathroom-product-image" alt="Bath Mat">
+                    <div class="card-body">
+                        <h5 class="card-title bathroom-product-title">Memory Foam Bath Mat</h5>
+                        <p class="card-text bathroom-product-description">Non-slip, quick-dry material</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0 bathroom-product-price">$15.99</span>
+                            <button class="btn btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Card 5 -->
+            <div class="col-md-4 mb-4 product-item" data-category="cleaning" data-name="toilet brush">
+                <div class="card bathroom-product-card">
+                    <img src="{{ url_for('static', filename='images/product/product-5.png') }}" class="card-img-top bathroom-product-image" alt="Toilet Brush">
+                    <div class="card-body">
+                        <h5 class="card-title bathroom-product-title">Toilet Brush & Holder Set</h5>
+                        <p class="card-text bathroom-product-description">Sturdy bristles, modern design</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0 bathroom-product-price">$12.99</span>
+                            <button class="btn btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Card 6 -->
+            <div class="col-md-4 mb-4 product-item" data-category="accessories" data-name="towel rack">
+                <div class="card bathroom-product-card">
+                    <img src="{{ url_for('static', filename='images/product/product-6.png') }}" class="card-img-top bathroom-product-image" alt="Towel Rack">
+                    <div class="card-body">
+                        <h5 class="card-title bathroom-product-title">Wall-Mounted Towel Rack</h5>
+                        <p class="card-text bathroom-product-description">Stainless steel, 4-bar design</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0 bathroom-product-price">$29.99</span>
+                            <button class="btn btn-primary">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %} 

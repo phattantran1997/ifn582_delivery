@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart - IFN582 Delivery{% endblock %}
+
+{% block styles %}
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+<!-- Custom CSS -->
+<link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/cart.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('main.home') }}">
+                <i class="fas fa-truck me-2"></i>IFN582 Delivery
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.bedroom') }}">Bedroom</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.dining') }}">Dining</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.living_room') }}">Living Room</a>
+                    </li>
+                    {% if 'user_id' in session %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('main.cart') }}">
+                                <i class="fas fa-shopping-cart me-1"></i>Cart
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.track_order') }}">
+                                <i class="fas fa-map-marker-alt me-1"></i>Track Order
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <form action="{{ url_for('auth.logout') }}" method="POST">
+                                <button type="submit" class="nav-link">Logout</button>
+                            </form>
+                        </li>
+                        {% if session['role'] == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.home') }}">Admin</a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+                <form class="d-flex" id="searchForm">
+                    <input class="form-control me-2" type="search" placeholder="Search items..." id="searchInput">
+                    <button class="btn btn-outline-light" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container mt-4">
+        <h2 class="mb-4">Shopping Cart</h2>
+        
+        {% if cart_items %}
+            <div class="row">
+                <div class="col-md-8">
+                    <!-- Cart Items -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            {% for item in cart_items %}
+                            <div class="cart-item mb-3 pb-3 border-bottom">
+                                <div class="row align-items-center">
+                                    <div class="col-md-2">
+                                        <img src="{{ url_for('static', filename='images/product/' + item.image) }}" class="img-fluid rounded" alt="{{ item.name }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h5 class="mb-1">{{ item.name }}</h5>
+                                        <p class="text-muted mb-0">Category: {{ item.category }}</p>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="input-group">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity({{ item.id }}, -1)">-</button>
+                                            <input type="number" class="form-control text-center" value="{{ item.quantity }}" min="1" id="quantity-{{ item.id }}">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity({{ item.id }}, 1)">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 text-end">
+                                        <p class="mb-0">${{ "%.2f"|format(item.price) }}</p>
+                                    </div>
+                                    <div class="col-md-2 text-end">
+                                        <button class="btn btn-danger btn-sm" onclick="removeItem({{ item.id }})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <!-- Order Summary -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Order Summary</h5>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal</span>
+                                <span>${{ "%.2f"|format(subtotal) }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Shipping</span>
+                                <span>${{ "%.2f"|format(shipping) }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Tax</span>
+                                <span>${{ "%.2f"|format(tax) }}</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between mb-3">
+                                <strong>Total</strong>
+                                <strong>${{ "%.2f"|format(total) }}</strong>
+                            </div>
+                            <a href="{{ url_for('main.checkout') }}" class="btn btn-primary w-100">Proceed to Checkout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
+                <h3>Your cart is empty</h3>
+                <p class="text-muted">Add some items to your cart to continue shopping</p>
+                <a href="{{ url_for('main.home') }}" class="btn btn-primary">Continue Shopping</a>
+            </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function updateQuantity(itemId, change) {
+    const input = document.getElementById(`quantity-${itemId}`);
+    const newValue = parseInt(input.value) + change;
+    if (newValue >= 1) {
+        input.value = newValue;
+        // Add AJAX call to update cart
+    }
+}
+
+function removeItem(itemId) {
+    if (confirm('Are you sure you want to remove this item?')) {
+        // Add AJAX call to remove item
+    }
+}
+</script>
+{% endblock %}
+</html>
