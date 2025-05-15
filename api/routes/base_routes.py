@@ -17,30 +17,6 @@ main_bp = Blueprint('main', __name__)
 def home():
     return render_template('index.html')
 
-@main_bp.route('/bedroom')
-def bedroom():
-    return render_template('bedroom.html')
-
-@main_bp.route('/dining')
-def dining():
-    return render_template('dining.html')
-
-@main_bp.route('/living-room')
-def living_room():
-    return render_template('living-room.html')
-
-@main_bp.route('/kitchen')
-def kitchen():
-    return render_template('kitchen.html')
-
-@main_bp.route('/cleaning')
-def cleaning():
-    return render_template('cleaning.html')
-
-@main_bp.route('/bathroom')
-def bathroom():
-    return render_template('bathroom.html')
-
 @main_bp.route('/track-order')
 def track_order():
     return render_template('tracking.html')
