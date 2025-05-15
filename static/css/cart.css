@@ -86,3 +86,11 @@
     margin-bottom: 2rem;
     color: #6c757d;
 } 
+
+.btn-hover-danger:hover {
+    background-color: #dc3545;
+}
+
+.btn-hover-focus:hover {
+    background-color: #198754;
+}
