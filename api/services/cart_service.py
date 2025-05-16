@@ -14,9 +14,9 @@ class CartService(BaseService):
                 ci.product_id, ci.quantity, ci.price, 
                 p.id, p.name, ca.id, ca.name
             FROM carts c
-            JOIN cart_items ci ON c.id = ci.cart_id
-            JOIN products p ON ci.product_id = p.id
-            JOIN categories ca ON p.category_id = ca.id
+            LEFT JOIN cart_items ci ON c.id = ci.cart_id
+            LEFT JOIN products p ON ci.product_id = p.id
+            LEFT JOIN categories ca ON p.category_id = ca.id
             WHERE c.user_id = %s AND c.status = 'active'
             """, (user_id,))
             rows = cur.fetchall()
@@ -25,7 +25,14 @@ class CartService(BaseService):
             if rows is None:
                 raise Exception("Cart not found")
 
+            if len(rows) == 0:
+                return Cart()
+
             cart = Cart(id=rows[0][0], user_id=rows[0][1], status=rows[0][2], cart_items=[])
+
+            # if cart is empty
+            if rows[0][3] is None:
+                return cart
 
             cart.cart_items = [
                 CartItem(
@@ -56,8 +63,8 @@ class CartService(BaseService):
                 ci.id, ci.quantity, ci.price, 
                 p.id, p.name, ca.id, ca.name
             FROM cart_items ci
-            JOIN products p ON ci.product_id = p.id
-            JOIN categories ca ON p.category_id = ca.id
+            LEFT JOIN products p ON ci.product_id = p.id
+            LEFT JOIN categories ca ON p.category_id = ca.id
             WHERE ci.cart_id = %s
             """, (cart_id,))
             rows = cur.fetchall()
@@ -67,6 +74,10 @@ class CartService(BaseService):
                 raise Exception("Cart items not found")
 
             cart = Cart(id=rows[0][0], user_id=rows[0][1], status=rows[0][2], cart_items=[])
+
+            # if cart is empty
+            if rows[0][3] is None:
+                return cart
 
             cart.cart_items = [
                 CartItem(
@@ -82,7 +93,7 @@ class CartService(BaseService):
                         )
                     ),
                 )
-                for row in rows
+                for row in rows if row is not None
             ]
             return cart
         except Exception as e:
@@ -102,7 +113,7 @@ class CartService(BaseService):
             if row is None:
                 raise Exception("Cart not found")
 
-            return row[0]
+            return row[0] if row[0] is not None else 0
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
 
@@ -120,7 +131,7 @@ class CartService(BaseService):
             if row is None:
                 raise Exception("Cart item not found")
 
-            return row[0]
+            return row[0] if row[0] is not None else 0
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
 
