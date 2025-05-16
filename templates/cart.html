@@ -26,24 +26,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('main.home') }}">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.bedroom') }}">Bedroom</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.dining') }}">Dining</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.living_room') }}">Living Room</a>
-                    </li>
                     {% if 'user_id' in session %}
                         <li class="nav-item">
-                            <a class="nav-link active" href="{{ url_for('main.cart') }}">
-                                <i class="fas fa-shopping-cart me-1"></i>Cart
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('main.track_order') }}">
-                                <i class="fas fa-map-marker-alt me-1"></i>Track Order
+                                <i class="fas fa-map-marker-alt me-1"></i>Order
                             </a>
                         </li>
                         <li class="nav-item">
@@ -62,10 +48,6 @@
                         </li>
                     {% endif %}
                 </ul>
-                <form class="d-flex" id="searchForm">
-                    <input class="form-control me-2" type="search" placeholder="Search items..." id="searchInput">
-                    <button class="btn btn-outline-light" type="submit">Search</button>
-                </form>
             </div>
         </div>
     </nav>
