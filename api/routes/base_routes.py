@@ -21,9 +21,9 @@ def home():
 def track_order():
     return render_template('tracking.html')
 
-@main_bp.route('/cart')
-def cart():
-    return render_template('cart.html')
+@main_bp.route('/checkout')
+def checkout():
+    return render_template('checkout.html')
 
 @main_bp.route('/product/<category>/<product>')
 def product_details(category, product):
