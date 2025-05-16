@@ -23,7 +23,7 @@ def track_order():
 
 @main_bp.route('/checkout')
 def checkout():
-    return render_template('checkout.html')
+    return render_template('checkout.html', cart_items=[{'name': 'Product 1', 'price': 10.99, 'quantity': 2}, {'name': 'Product 2', 'price': 5.99, 'quantity': 1}])
 
 @main_bp.route('/product/<category>/<product>')
 def product_details(category, product):
