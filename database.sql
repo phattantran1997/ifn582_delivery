@@ -30,8 +30,8 @@ CREATE TABLE products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     price DECIMAL(10,2) NOT NULL,
-    image VARCHAR(255) NOT NULL,
-    description VARCHAR(255) NOT NULL,
+    image VARCHAR(255),
+    description VARCHAR(255),
     category_id INT,
     FOREIGN KEY (category_id) REFERENCES categories(id)
 );
