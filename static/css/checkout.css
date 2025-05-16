@@ -21,98 +21,6 @@ footer {
     padding-bottom: 1rem;
 }
 
-/* Additional checkout page styles */
-.checkout-section-title {
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-}
-
-.order-summary-card {
-    position: sticky;
-    top: 20px;
-}
-
-#place-order-btn {
-    padding: 12px;
-    font-weight: 500;
-    font-size: 1.05rem;
-}
-
-/* Delivery Options */
-.delivery-option-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 16px 20px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    gap: 15px;
-    width: 100%;
-}
-.delivery-option-card.selected {
-    border-color: #0d6efd;
-    background-color: rgba(13, 110, 253, 0.05);
-}
-
-.delivery-option-info {
-    flex: 1;
-}
-
-.delivery-option-title {
-    font-weight: 600;
-    margin-bottom: 4px;
-}
-
-.delivery-option-description {
-    color: #6c757d;
-    font-size: 0.9rem;
-}
-
-.delivery-option-price {
-    font-weight: 600;
-    color: #212529;
-}
-
-/* Payment Method */
-.payment-method-card {
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 16px 20px;
-    margin-bottom: 12px;
-    cursor: pointer;
-}
-
-.payment-method-card.selected {
-    border-color: #0d6efd;
-    background-color: rgba(13, 110, 253, 0.05);
-}
-
-.payment-method-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-}
-
-.payment-method-title {
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.payment-method-icon {
-    font-size: 1.5rem;
-}
-
-.payment-method-details {
-    padding-top: 12px;
-    border-top: 1px solid #dee2e6;
-    margin-top: 12px;
-}
-
 /* Order Summary */
 .order-summary-card {
     position: sticky;
@@ -125,40 +33,6 @@ footer {
     font-size: 1.05rem;
 }
 
-/* Form Styling */
-.form-section {
-    margin-bottom: 2rem;
-}
-
-.section-title {
-    font-weight: 600;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #dee2e6;
-}
-
-/* Credit Card Form */
-.credit-card-form {
-    background-color: #f8f9fa;
-    padding: 1rem;
-    border-radius: 8px;
-}
-
-.card-icon {
-    font-size: 1.5rem;
-    margin-right: 0.5rem;
-}
-
-.card-number-group {
-    position: relative;
-}
-
-.card-icons {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-}
 
 /* Address Form */
 .address-form {
@@ -167,55 +41,7 @@ footer {
     border-radius: 8px;
 }
 
-/* Checkout Progress */
-.checkout-progress {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-    position: relative;
-}
-
-.progress-step {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    z-index: 1;
-}
-
-.step-number {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-color: #e9ecef;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.step-number.active {
-    background-color: #0d6efd;
-    color: white;
-}
-
-.step-number.completed {
-    background-color: #198754;
-    color: white;
-}
-
-.step-title {
-    font-size: 0.85rem;
-    text-align: center;
-}
-
-.progress-line {
-    position: absolute;
-    top: 15px;
-    left: 15%;
-    right: 15%;
-    height: 2px;
-    background-color: #e9ecef;
-    z-index: 0;
+.delivery-selected {
+    cursor: pointer;
+    color: #31c514;
 }

@@ -6,6 +6,7 @@ from api.routes.base_routes import main_bp
 from api.routes.auth_routes import auth_bp
 from api.routes.admin_routes import admin_bp
 from api.routes.cart_routes import cart_bp
+from api.routes.checkout_routes import checkout_bp
 from utils.mysql_init import MySQLManager
 from config import load_env_file    
 import os
@@ -31,6 +32,7 @@ app.register_blueprint(main_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(cart_bp)
+app.register_blueprint(checkout_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)

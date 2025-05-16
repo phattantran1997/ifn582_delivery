@@ -72,7 +72,7 @@
                                 <strong>Total</strong>
                                 <strong>${{ total }}</strong>
                             </div>
-                            <a href="{{ url_for('main.checkout', cart=cart) }}" class="btn btn-primary w-100">Proceed to Checkout</a>
+                            <a href="{{ url_for('checkout.index', cart_id=cart.id) }}" class="btn btn-primary w-100">Proceed to Checkout</a>
                         </div>
                     </div>
                 </div>
