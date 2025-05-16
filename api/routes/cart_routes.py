@@ -13,7 +13,6 @@ def cart_page():
     user_id = session.get('user_id')
     try:
         cart = cart_route.service.get_cart_by_user_id(user_id)
-        print(cart)
         subtotal, tax, total = _calculate_total(cart.id)
         return render_template('cart.html', cart=cart, subtotal=subtotal, tax=tax, total=total)
     except Exception as e:

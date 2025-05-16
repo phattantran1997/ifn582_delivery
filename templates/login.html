@@ -1,24 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Login{% endblock %}
 {% block styles %}
-<style>
-    .form-signin {
-        width: 100%;
-        max-width: 330px;
-        margin: auto;
-    }
-    .error-message {
-        color: #dc3545;
-        margin-bottom: 1rem;
-        display: none;
-    }
-    .form-floating .form-control {
-        border-radius: 0;
-    }
-</style>
 {% endblock %}
 {% block content %}
-<main class="mt-5">
+<main>
     <!-- Login Form -->
     <form id="login-form" action="{{ url_for('auth.login') }}" method="POST" class="form-signin py-5 px-4" >
         <img id="logo" class="mb-2 w-50 d-block mx-auto" src="{{ url_for('static', filename='images/logo.png') }}" alt="Store Logo">

@@ -11,8 +11,8 @@ class CartService(BaseService):
             cur.execute("""
             SELECT 
                 c.id, c.user_id, c.status, 
-                ci.product_id, ci.quantity, ci.price, 
-                p.id, p.name, ca.id, ca.name
+                ci.id, ci.quantity, ci.price, 
+                p.id, p.name, p.description, p.image, ca.id, ca.name
             FROM carts c
             LEFT JOIN cart_items ci ON c.id = ci.cart_id
             LEFT JOIN products p ON ci.product_id = p.id
@@ -42,9 +42,11 @@ class CartService(BaseService):
                     product=Product(
                         id=row[6],
                         name=row[7],
+                        description=row[8],
+                        image=row[9],
                         category=Category(
-                            id=row[8],
-                            name=row[9]
+                            id=row[10],
+                            name=row[11]
                         )
                     ),
                 )
@@ -53,19 +55,21 @@ class CartService(BaseService):
             return cart
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
-    # get cart subtotal includes GST
 
     def get_cart_by_id(self, cart_id: int):
         try:
             cur = self.get_cursor()
             cur.execute("""
             SELECT 
+                c.id, c.user_id, c.status,
                 ci.id, ci.quantity, ci.price, 
-                p.id, p.name, ca.id, ca.name
-            FROM cart_items ci
+                p.id, p.name, p.description,
+                p.image, ca.id, ca.name
+            FROM carts c
+            LEFT JOIN cart_items ci ON c.id = ci.cart_id
             LEFT JOIN products p ON ci.product_id = p.id
             LEFT JOIN categories ca ON p.category_id = ca.id
-            WHERE ci.cart_id = %s
+            WHERE c.id = %s
             """, (cart_id,))
             rows = cur.fetchall()
             cur.close()
@@ -81,15 +85,17 @@ class CartService(BaseService):
 
             cart.cart_items = [
                 CartItem(
-                    id=row[0],
-                    quantity=row[1],
-                    price=row[2],
+                    id=row[3],
+                    quantity=row[4],
+                    price=row[5],
                     product=Product(
-                        id=row[3],
-                        name=row[4],
+                        id=row[6],
+                        name=row[7],
+                        description=row[8],
+                        image=row[9],
                         category=Category(
-                            id=row[5],
-                            name=row[6]
+                            id=row[10],
+                            name=row[11]
                         )
                     ),
                 )

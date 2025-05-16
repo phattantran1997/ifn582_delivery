@@ -127,10 +127,10 @@ INSERT INTO users (username, email, password, role_id) VALUES
 ('admin', 'admin@example.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 1),
 ('user1', 'user1@example.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 2);
 
-INSERT INTO products (name, price, category_id) VALUES 
-('Pizza', 12.99, 1), 
-('Bread', 3.99, 2), 
-('Aspirin', 5.99, 3);
+INSERT INTO products (name, price, category_id, image, description) VALUES 
+('Pizza', 12.99, 1, '/images/products/pizza.png', 'A delicious pizza with fresh ingredients and a crispy crust. Perfect for a quick and easy meal.'), 
+('Bread', 3.99, 2, '//images/products/bread.png', 'A fresh bread with a soft texture and a delicious flavor. Perfect for a quick and easy meal.'), 
+('Aspirin', 5.99, 3, '/images/products/aspirin.png', 'A pain reliever that helps reduce inflammation and swelling. Perfect for a quick and easy meal.');
 
 INSERT INTO shipping_methods (name, description, fee) VALUES 
 ('Standard Shipping', 'Standard shipping method', 5.99),
