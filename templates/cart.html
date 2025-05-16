@@ -20,48 +20,43 @@
         {% if cart.cart_items %}
             <div class="row">
                 <div class="col-md-8">
-                    <!-- Cart Items -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            {% for item in cart.cart_items %}
-                            <div class="cart-item mb-3 pb-3 border-bottom">
-                                <div class="row align-items-center">
-                                    <div class="col-md-2">
-                                        <img src="{{ url_for('static', filename=item.product.image) }}" class="img-fluid rounded" alt="{{ item.product.name }}">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <h5 class="mb-1">{{ item.product.name }}</h5>
-                                        <p class="text-muted mb-0">{{ item.product.category.name }}</p>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="input-group">
-                                            <form action="{{ url_for('cart.minus_quantity', cart_id=cart.id, cart_item_id=item.id) }}" method="POST">
-                                                <button class="btn btn-outline-secondary btn-hover-focus" type="submit"><i class="fa fa-minus"></i></button>
-                                            </form>
-                                            <input type="text" class="form-control text-center" value="{{ item.quantity }}" min="1" id="quantity-{{ item.id }}">
-                                            <form action="{{ url_for('cart.plus_quantity', cart_id=cart.id, cart_item_id=item.id) }}" method="POST">
-                                                <button class="btn btn-outline-secondary btn-hover-focus" type="submit"><i class="fa fa-plus"></i></button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2 text-end">
-                                        <p class="mb-0">${{ "%.2f"|format(item.price) }}</p>
-                                    </div>
-                                    <div class="col-md-2 text-end">
-                                        <form action="{{ url_for('cart.delete_cart_item', cart_id=cart.id, cart_item_id=item.id) }}" method="POST">
-                                            <button class="btn btn-outline-secondary btn-hover-danger me-1" type="submit"><i class="fa fa-trash"></i></button>
+                    {% for item in cart.cart_items %}
+                        <div class="cart-item p-4 border-bottom shadow-sm">
+                            <div class="row align-items-center">
+                                <div class="col-md-2">
+                                    <img src="{{ url_for('static', filename=item.product.image) }}" class="img-fluid rounded" alt="{{ item.product.name }}">
+                                </div>
+                                <div class="col-md-3">
+                                    <h5 class="mb-1">{{ item.product.name }}</h5>
+                                    <p class="text-muted mb-0">{{ item.product.category.name }}</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <form action="{{ url_for('cart.minus_quantity', cart_id=cart.id, cart_item_id=item.id) }}" method="POST">
+                                            <button class="btn btn-outline-secondary btn-hover-focus" type="submit"><i class="fa fa-minus"></i></button>
+                                        </form>
+                                        <input type="text" class="form-control text-center" value="{{ item.quantity }}" min="1" id="quantity-{{ item.id }}">
+                                        <form action="{{ url_for('cart.plus_quantity', cart_id=cart.id, cart_item_id=item.id) }}" method="POST">
+                                            <button class="btn btn-outline-secondary btn-hover-focus" type="submit"><i class="fa fa-plus"></i></button>
                                         </form>
                                     </div>
                                 </div>
+                                <div class="col-md-2 text-end">
+                                    <p class="mb-0">${{ "%.2f"|format(item.price) }}</p>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <form action="{{ url_for('cart.delete_cart_item', cart_id=cart.id, cart_item_id=item.id) }}" method="POST">
+                                        <button class="btn btn-outline-secondary btn-hover-danger me-1" type="submit"><i class="fa fa-trash"></i></button>
+                                    </form>
+                                </div>
                             </div>
-                            {% endfor %}
                         </div>
-                    </div>
+                    {% endfor %}
                 </div>
                 
                 <div class="col-md-4">
                     <!-- Order Summary -->
-                    <div class="card">
+                    <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title">Order Summary</h5>
                             <div class="d-flex justify-content-between mb-2">
