@@ -1,5 +1,5 @@
 import decimal
-from flask import Blueprint, render_template, request, session
+from flask import Blueprint, render_template, request, session, redirect, url_for
 from api.routes.base_routes import BaseRoute
 from api.services.order_service import OrderService
 from api.services.cart_service import CartService
@@ -35,7 +35,7 @@ def place_order(cart_id):
     selected_delivery_method_id = request.args['selected_delivery_method_id']
     selected_delivery_method = checkout_service.service.get_all_shipping_methods()[int(selected_delivery_method_id) - 1]
     _, _, total_amount = _calculate_total(cart_id, selected_delivery_method)
-    order = checkout_service.service.create_order(
+    order_id = checkout_service.service.create_order(
         recipient_name=request.form['first_name'] + ' ' + request.form['last_name'],
         phone=request.form['phone'],
         address=','.join([request.form['address'],request.form['city'],request.form['state'],request.form['zip_code']]),
@@ -44,7 +44,8 @@ def place_order(cart_id):
         cart_id=cart_id,
         total_amount=total_amount
     )
-    return render_template('tracking.html')
+
+    return redirect(url_for('order.history'))
 
 def _calculate_total(cart_id: int, delivery_method):
     subtotal = cart_service.service.get_cart_subtotal(cart_id)
