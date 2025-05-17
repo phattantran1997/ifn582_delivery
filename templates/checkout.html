@@ -15,109 +15,116 @@
     <div class="container mt-4">
         <h2 class="mb-4">Checkout</h2>
         
-        <div class="row">
-            <div class="col-md-8">
-                <!-- Shipping Information -->
-                <div class="card mb-2">
-                    <div class="card-body">
-                        <h5 class="card-title">Shipping Information</h5>
-                        <form id="shipping-form">
+        <form id="checkout-form" action="{{ url_for('checkout.place_order', cart_id=cart.id, selected_delivery_method_id=selected_delivery_method.id) }}" method="POST">
+            <div class="row">
+                <div class="col-md-8">
+                    <!-- Shipping Information -->
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h5 class="card-title">Shipping Information</h5>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="firstName" class="form-label">First Name</label>
-                                    <input type="text" class="form-control" id="firstName" required>
+                                    {{form.first_name.label(class="form-label")}}
+                                    {{form.first_name(class="form-control")}}
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="lastName" class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" id="lastName" required>
+                                    {{form.last_name.label(class="form-label")}}
+                                    {{form.last_name(class="form-control")}}
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" required>
+                                {{form.phone.label(class="form-label")}}
+                                {{form.phone(class="form-control")}}
                             </div>
                             <div class="mb-3">
-                                <label for="address" class="form-label">Address</label>
-                                <input type="text" class="form-control" id="address" required>
+                                {{form.address.label(class="form-label")}}
+                                {{form.address(class="form-control")}}
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="city" class="form-label">City</label>
-                                    <input type="text" class="form-control" id="city" required>
+                                    {{form.city.label(class="form-label")}}
+                                    {{form.city(class="form-control")}}
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="state" class="form-label">State</label>
-                                    <input type="text" class="form-control" id="state" required>
+                                    {{form.state.label(class="form-label")}}
+                                    {{form.state(class="form-control")}}
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="zip" class="form-label">ZIP Code</label>
-                                    <input type="text" class="form-control" id="zip" required>
+                                    {{form.zip_code.label(class="form-label")}}
+                                    {{form.zip_code(class="form-control")}}
                                 </div>
                             </div>
+                        </div>
+                        <!-- Fake form to avoid delivery method selection bug-->
+                        <form action="{{ url_for('checkout.index', cart_id=cart.id) }}" method="POST">
+                            <button type="submit" name="delivery_method_id" class="btn btn-hidden p-0"></button>
                         </form>
-                    </div>
-
-                     <!-- Delivery Options -->
-                    <div class="border-top p-3">
-                        <h5 class="card-title">Delivery Options</h5>
-                        <div class="row p-1">
-                            {% for delivery in delivery_options %}
-                                <div class="col-6 p-2">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <strong>{{ delivery.name }}</strong><br>
-                                            {{ delivery.description }}
-                                        </div>
-                                        <div class="col-4 ">
-                                            +$ {{ delivery.fee }}
-                                        </div>
-                                        <div class="col-2">
-                                            <form action="{{ url_for('checkout.update_delivery', cart_id=cart.id) }}" method="POST">
-                                            {% if delivery.id == selected_delivery_method.id %}
-                                                <button type="submit" name="delivery_method_id" value="{{ delivery.id }}" class="btn btn-hidden p-0"><i class="bi bi-check-circle delivery-selected"></i></button>
-                                            {% else %}
-                                                <button type="submit" name="delivery_method_id" value="{{ delivery.id }}" class="btn btn-hidden p-0"><i class="bi bi-circle"></i></button>
-                                            {% endif %}
-                                            </form>
+                        <!-- Delivery Options -->
+                        <div class="border-top p-3">
+                            <h5 class="card-title">Delivery Options</h5>
+                            <div class="row p-1">
+                                {% for delivery in delivery_options %}
+                                    <div class="col-6 p-2">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <strong>{{ delivery.name }}</strong><br>
+                                                {{ delivery.description }}
+                                            </div>
+                                            <div class="col-4">
+                                                +$ {{ delivery.fee }}
+                                            </div>
+                                            <div class="col-2">
+                                                <form action="{{ url_for('checkout.index', cart_id=cart.id) }}" method="POST">
+                                                    {% if delivery.id == selected_delivery_method.id %}
+                                                        <button type="submit" name="delivery_method_id" value="{{ delivery.id }}" class="btn btn-hidden p-0"><i class="bi bi-check-circle delivery-selected"></i></button>
+                                                    {% else %}
+                                                        <button type="submit" name="delivery_method_id" value="{{ delivery.id }}" class="btn btn-hidden p-0"><i class="bi bi-circle"></i></button>
+                                                    {% endif %}
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <!-- Order Summary -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Order Summary</h5>
+                            {% for item in cart.cart_items %}
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>{{ item.product.name }} ${{ item.price }} x {{ item.quantity }}</span>
+                                <span>${{ "%.2f"|format(item.price * item.quantity) }}</span>
+                            </div>
                             {% endfor %}
+                            <hr>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal</span>
+                                <span>${{ subtotal }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Tax</span>
+                                <span>${{ "%.2f"|format(tax) }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Shipping</span>
+                                <span>${{ "%.2f"|format(selected_delivery_method.fee) }}</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between mb-3">
+                                <strong>Total</strong>
+                                <strong>${{ "%.2f"|format(total) }}</strong>
+                            </div>
+                            {{ form.submit(class="btn btn-primary w-100") }}
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <!-- Order Summary -->
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Order Summary</h5>
-                        {% for item in cart.cart_items %}
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>{{ item.product.name }} x {{ item.quantity }}</span>
-                            <span>${{ "%.2f"|format(item.price * item.quantity) }}</span>
-                        </div>
-                        {% endfor %}
-                        <hr>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Subtotal</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Shipping</span>
-                            <span>${{ selected_delivery_method.fee }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Tax</span>
-                        </div>
-                        <hr>
-                        <div class="d-flex justify-content-between mb-3">
-                            <strong>Total</strong>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100" onclick="processOrder()">Place Order</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </form>
     </div>
 </main>
 {% endblock %}

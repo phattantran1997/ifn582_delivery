@@ -59,6 +59,7 @@ CREATE TABLE shipping_methods (
 CREATE TABLE shipments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     shipping_method_id INT,
+    recipient_name VARCHAR(100) NOT NULL,
     address VARCHAR(255) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

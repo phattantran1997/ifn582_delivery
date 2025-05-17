@@ -14,23 +14,25 @@ class OrderService(BaseService):
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
 
-    def create_shipment(self, shipping_method_id, address, phone):
+
+    def create_order(
+        self,
+        recipient_name,
+        phone,
+        address,
+        delivery_method_id,
+        user_id,
+        cart_id,
+        total_amount
+    ):
         try:
             cur = self.get_cursor()
             cur.execute("""
-            INSERT INTO shipments (shipping_method_id, address, phone)
-            VALUES (%s, %s, %s)
-            """, (shipping_method_id, address, phone))
+            INSERT INTO shipments (shipping_method_id, recipient_name, address, phone)
+            VALUES (%s, %s, %s, %s)
+            """, (delivery_method_id, recipient_name, address, phone))
             shipment_id = cur.lastrowid
-            self.mysql.connection.commit()
-            cur.close()
-            return shipment_id
-        except Exception as e:
-            raise Exception(f"Database error: {str(e)}")
 
-    def create_order(self, user_id, cart_id, shipment_id, total_amount):
-        try:
-            cur = self.get_cursor()
             cur.execute("""
             INSERT INTO orders (user_id, cart_id, shipment_id, status, total_amount)
             VALUES (%s, %s, %s, %s, %s)
