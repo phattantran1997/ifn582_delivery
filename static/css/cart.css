@@ -10,6 +10,10 @@
     margin-bottom: 0.5rem;
 }
 
+.cart-item.option:last-child {
+    margin-bottom: 0;
+}
+
 .cart-item-price {
     font-weight: 500;
     color: #0d6efd;

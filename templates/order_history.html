@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Order History - IFN582 Delivery{% endblock %}
+
+{% block styles %}
+<!-- Custom CSS -->
+<style>
+    .product-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="container w-50 mt-4">
+    <h2 class="mb-2">Order History</h1>
+    <p class="text-muted mb-4">Check the status of recent orders, manage returns, and discover similar products</p>
+    <!-- Orders List -->
+    {% for order in orders %}
+    <div class="container border">
+        <!-- Order Header -->
+        <div class="border-bottom p-3 mb-2">
+            <div class="row">
+                <div class="col">
+                    <div class="row text-start">
+                        <div class="col-sm-4">
+                            <h5 class="text-muted">Order Number</h5>
+                            <strong>{{ order.id }}</strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <h5 class="text-muted">Date Placed</h5>
+                            <strong>{{ order.created_at.strftime('%b %d, %Y') }}</strong>
+                        </div>
+                        <div class="col-sm-4">
+                            <h5 class="text-muted">Total Amount</h5>
+                            <strong>${{ "%.2f"|format(order.total_amount) }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Content -->
+        <div class="container p-2">
+            {% for item in order.items %}
+            <div class="row mb-4 align-items-center">
+                <div class="col-auto">
+                    <img src="{{ url_for('static', filename=item.product.image) }}" class="product-image" alt="{{ item.product.name }}">
+                </div>
+                <div class="col-6">
+                    <h5 class="mb-1">{{ item.product.name }}</h5>
+                    <p class="mb-1 text-muted">{{ item.product.description }}</p>
+                    <p class="mb-0">Qty: {{ item.quantity }}</p>
+                </div>
+                <div class="col-auto text-end">
+                    <h5 class="mb-3">${{ "%.2f"|format(item.price * item.quantity) }}</h5>
+                    <span class="text-success"><i class="bi bi-check-circle-fill"></i> Delivered On {{ order.created_at.strftime('%B %d, %Y') }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if not orders %}
+    <div class="text-center border py-5">
+        <h1 class="bi bi-card-list mb-3 text-muted"></h1>
+        <h3>No orders found</h3>
+        <p class="text-muted">You have not made any orders yet. Go Shopping!</p>
+        <a href="{{ url_for('main.home') }}" class="btn btn-primary">Continue Shopping</a>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

@@ -12,47 +12,6 @@
 <link href="{{ url_for('static', filename='css/tracking.css') }}" rel="stylesheet">
 {% endblock %}
 
-{% block navbar %}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('main.home') }}">
-                <i class="fas fa-truck me-2"></i>IFN582 Delivery
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav"> 
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.home') }}">Home</a>
-                    </li>
-                    {% if 'user_id' in session %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.cart') }}">
-                                <i class="fas fa-shopping-cart me-1"></i>Cart
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <form action="{{ url_for('auth.logout') }}" method="POST">
-                                <button type="submit" class="nav-link">Logout</button>
-                            </form>
-                        </li>
-                        {% if session['role'] == 'admin' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin.home') }}">Admin</a>
-                            </li>
-                        {% endif %}
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
-{% endblock %}
-
 {% block content %}
 <main>
     <div class="tracking-container">

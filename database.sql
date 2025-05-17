@@ -59,6 +59,7 @@ CREATE TABLE shipping_methods (
 CREATE TABLE shipments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     shipping_method_id INT,
+    recipient_name VARCHAR(100) NOT NULL,
     address VARCHAR(255) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -129,7 +130,7 @@ INSERT INTO users (username, email, password, role_id) VALUES
 
 INSERT INTO products (name, price, category_id, image, description) VALUES 
 ('Pizza', 12.99, 1, '/images/products/pizza.png', 'A delicious pizza with fresh ingredients and a crispy crust. Perfect for a quick and easy meal.'), 
-('Bread', 3.99, 2, '//images/products/bread.png', 'A fresh bread with a soft texture and a delicious flavor. Perfect for a quick and easy meal.'), 
+('Bread', 3.99, 2, '/images/products/bread.png', 'A fresh bread with a soft texture and a delicious flavor. Perfect for a quick and easy meal.'), 
 ('Aspirin', 5.99, 3, '/images/products/aspirin.png', 'A pain reliever that helps reduce inflammation and swelling. Perfect for a quick and easy meal.');
 
 INSERT INTO shipping_methods (name, description, fee) VALUES 

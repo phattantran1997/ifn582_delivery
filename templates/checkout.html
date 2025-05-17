@@ -8,188 +8,123 @@
 <!-- Bootstrap Icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 <!-- Custom CSS -->
-<link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='css/checkout.css') }}" rel="stylesheet">
 {% endblock %}
-
-{% block navbar %}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('main.home') }}">
-                <i class="fas fa-truck me-2"></i>IFN582 Delivery
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.home') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.bedroom') }}">Bedroom</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.dining') }}">Dining</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.living_room') }}">Living Room</a>
-                    </li>
-                    {% if 'user_id' in session %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.cart') }}">
-                                <i class="fas fa-shopping-cart me-1"></i>Cart
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.track_order') }}">
-                                <i class="fas fa-map-marker-alt me-1"></i>Track Order
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <form action="{{ url_for('auth.logout') }}" method="POST">
-                                <button type="submit" class="nav-link">Logout</button>
-                            </form>
-                        </li>
-                        {% if session['role'] == 'admin' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin.home') }}">Admin</a>
-                            </li>
-                        {% endif %}
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
-                        </li>
-                    {% endif %}
-                </ul>
-                <form class="d-flex" id="searchForm">
-                    <input class="form-control me-2" type="search" placeholder="Search items..." id="searchInput">
-                    <button class="btn btn-outline-light" type="submit">Search</button>
-                </form>
-            </div>
-        </div>
-    </nav>
-{% endblock %}
-
 {% block content %}
 <main>
     <div class="container mt-4">
         <h2 class="mb-4">Checkout</h2>
         
-        <div class="row">
-            <div class="col-md-8">
-                <!-- Shipping Information -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Shipping Information</h5>
-                        <form id="shipping-form">
+        <form id="checkout-form" action="{{ url_for('checkout.place_order', cart_id=cart.id, selected_delivery_method_id=selected_delivery_method.id) }}" method="POST">
+            <div class="row">
+                <div class="col-md-8">
+                    <!-- Shipping Information -->
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h5 class="card-title">Shipping Information</h5>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="firstName" class="form-label">First Name</label>
-                                    <input type="text" class="form-control" id="firstName" required>
+                                    {{form.first_name.label(class="form-label")}}
+                                    {{form.first_name(class="form-control")}}
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="lastName" class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" id="lastName" required>
+                                    {{form.last_name.label(class="form-label")}}
+                                    {{form.last_name(class="form-control")}}
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" required>
+                                {{form.phone.label(class="form-label")}}
+                                {{form.phone(class="form-control")}}
                             </div>
                             <div class="mb-3">
-                                <label for="address" class="form-label">Address</label>
-                                <input type="text" class="form-control" id="address" required>
+                                {{form.address.label(class="form-label")}}
+                                {{form.address(class="form-control")}}
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="city" class="form-label">City</label>
-                                    <input type="text" class="form-control" id="city" required>
+                                    {{form.city.label(class="form-label")}}
+                                    {{form.city(class="form-control")}}
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="state" class="form-label">State</label>
-                                    <input type="text" class="form-control" id="state" required>
+                                    {{form.state.label(class="form-label")}}
+                                    {{form.state(class="form-control")}}
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="zip" class="form-label">ZIP Code</label>
-                                    <input type="text" class="form-control" id="zip" required>
+                                    {{form.zip_code.label(class="form-label")}}
+                                    {{form.zip_code(class="form-control")}}
                                 </div>
                             </div>
+                        </div>
+                        <!-- Fake form to avoid delivery method selection bug-->
+                        <form action="{{ url_for('checkout.index', cart_id=cart.id) }}" method="POST">
+                            <button type="submit" name="delivery_method_id" class="btn btn-hidden p-0"></button>
                         </form>
+                        <!-- Delivery Options -->
+                        <div class="border-top p-3">
+                            <h5 class="card-title">Delivery Options</h5>
+                            <div class="row p-1">
+                                {% for delivery in delivery_options %}
+                                    <div class="col-6 p-2">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <strong>{{ delivery.name }}</strong><br>
+                                                {{ delivery.description }}
+                                            </div>
+                                            <div class="col-4">
+                                                +$ {{ delivery.fee }}
+                                            </div>
+                                            <div class="col-2">
+                                                <form action="{{ url_for('checkout.index', cart_id=cart.id) }}" method="POST">
+                                                    {% if delivery.id == selected_delivery_method.id %}
+                                                        <button type="submit" name="delivery_method_id" value="{{ delivery.id }}" class="btn btn-hidden p-0"><i class="bi bi-check-circle delivery-selected"></i></button>
+                                                    {% else %}
+                                                        <button type="submit" name="delivery_method_id" value="{{ delivery.id }}" class="btn btn-hidden p-0"><i class="bi bi-circle"></i></button>
+                                                    {% endif %}
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Payment Information -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Payment Information</h5>
-                        <form id="payment-form">
-                            <div class="mb-3">
-                                <label for="cardNumber" class="form-label">Card Number</label>
-                                <input type="text" class="form-control" id="cardNumber" required>
+                
+                <div class="col-md-4">
+                    <!-- Order Summary -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Order Summary</h5>
+                            {% for item in cart.cart_items %}
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>{{ item.product.name }} ${{ item.price }} x {{ item.quantity }}</span>
+                                <span>${{ "%.2f"|format(item.price * item.quantity) }}</span>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="expiryDate" class="form-label">Expiry Date</label>
-                                    <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="cvv" class="form-label">CVV</label>
-                                    <input type="text" class="form-control" id="cvv" required>
-                                </div>
+                            {% endfor %}
+                            <hr>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal</span>
+                                <span>${{ subtotal }}</span>
                             </div>
-                        </form>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Tax</span>
+                                <span>${{ "%.2f"|format(tax) }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Shipping</span>
+                                <span>${{ "%.2f"|format(selected_delivery_method.fee) }}</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between mb-3">
+                                <strong>Total</strong>
+                                <strong>${{ "%.2f"|format(total) }}</strong>
+                            </div>
+                            {{ form.submit(class="btn btn-primary w-100") }}
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <!-- Order Summary -->
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Order Summary</h5>
-                        {% for item in cart_items %}
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>{{ item.name }} x {{ item.quantity }}</span>
-                            <span>${{ "%.2f"|format(item.price * item.quantity) }}</span>
-                        </div>
-                        {% endfor %}
-                        <hr>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Subtotal</span>
-                            <span>${{ "%.2f"|format(subtotal) }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Shipping</span>
-                            <span>${{ "%.2f"|format(shipping) }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Tax</span>
-                            <span>${{ "%.2f"|format(tax) }}</span>
-                        </div>
-                        <hr>
-                        <div class="d-flex justify-content-between mb-3">
-                            <strong>Total</strong>
-                            <strong>${{ "%.2f"|format(total) }}</strong>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100" onclick="processOrder()">Place Order</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </form>
     </div>
 </main>
-{% endblock %}
-
-{% block scripts %}
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-function processOrder() {
-    // Add order processing logic here
-    if (confirm('Are you sure you want to place this order?')) {
-        // Submit the order
-    }
-}
-</script>
 {% endblock %}

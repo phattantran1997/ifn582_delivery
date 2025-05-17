@@ -30,7 +30,7 @@
                     {% block navitems %}{% endblock %}
                     {% if 'user_id' in session %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.track_order') }}">
+                            <a class="nav-link" href="{{ url_for('order.history') }}">
                                 <i class="fas fa-map-marker-alt me-1"></i>Order
                             </a>
                         </li>
@@ -72,7 +72,7 @@
                 <h5 class="footer-heading">Quick Links</h5>
                 <ul class="list-unstyled">
                     <li><a href="{{ url_for('main.home') }}">Home</a></li>
-                    <li><a href="{{ url_for('main.track_order') }}">Track Order</a></li>
+                    <li><a href="{{ url_for('order.history') }}">Order History</a></li>
                 </ul>
             </div>
             <div class="col-md-4">

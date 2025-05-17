@@ -5,3 +5,4 @@ class ShippingMethod:
     id: int = None
     name: str = None
     description: str = None
+    fee: float = None
