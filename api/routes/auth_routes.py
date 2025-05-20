@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, redirect, request, session, render_template
+from flask import Blueprint, jsonify, redirect, request, session, render_template, url_for
 from api.services.auth_service import AuthService
 from api.routes.base_routes import BaseRoute 
 
@@ -20,7 +20,7 @@ def login():
 
     session['user_id'] = user.id
     session['role'] = user.role
-    return render_template('index.html')
+    return redirect(url_for('main.home'))
 
 @auth_bp.route('/register', methods=['GET'])
 def register_page():
@@ -35,10 +35,10 @@ def register():
         return render_template('register.html', error='Email already exists')
 
     user = auth_route.service.register(request.form)
-    return render_template('login.html', success='Register successful, please login')
+    return redirect(url_for('auth.login_page'))
 
 @auth_bp.route('/logout', methods=['POST'])
 def logout():
     session.pop('user_id', None)
     session.pop('role', None)
-    return render_template('index.html')
+    return redirect(url_for('main.home'))

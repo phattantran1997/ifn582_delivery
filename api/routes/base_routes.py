@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from utils.mysql_init import MySQLManager
+from api.services.product_service import ProductService
 
 class BaseRoute:
     def __init__(self, service_class):
@@ -13,10 +14,12 @@ class BaseRoute:
         return self._service
 
 main_bp = Blueprint('main', __name__)
+
 @main_bp.route('/')
 def home():
-    return render_template('index.html')
-
-@main_bp.route('/product/<category>/<product>')
-def product_details(category, product):
-    return render_template('product_details.html', category=category, product=product)
+    product_service = ProductService()
+    category = request.args.get('category')
+    search = request.args.get('search')
+    products = product_service.get_all_products(category=category, search=search)
+    categories = product_service.get_categories()
+    return render_template('homepage.html', products=products, categories=categories)

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template
 from api.services.product_service import ProductService
 from api.routes.base_routes import BaseRoute
 
@@ -12,7 +12,13 @@ def get_products():
         return jsonify({'status': 'success', 'data': products}), 200
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
-
+@product_bp.route('/categories', methods=['GET'])
+def get_categories():
+    try:
+        categories = product_route.service.get_categories()
+        return jsonify({'status': 'success', 'data': categories}), 200
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 @product_bp.route('/<int:id>', methods=['GET'])
 def get_product(id):
     try:
@@ -46,3 +52,7 @@ def delete_product(id):
         return jsonify({'status': 'success', 'message': 'Product deleted successfully'}), 200
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 404 if str(e) == "Product not found" else 500
+
+@product_bp.route('/details/<category>/<product>')
+def product_details(category, product):
+    return render_template('product_details.html', category=category, product=product)
