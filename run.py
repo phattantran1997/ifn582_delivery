@@ -1,5 +1,5 @@
 # run.py
-from flask import Flask
+from flask import Flask, render_template
 from api.routes.product_routes import product_bp
 from api.routes.user_routes import user_bp
 from api.routes.base_routes import main_bp
@@ -35,6 +35,14 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(cart_bp)
 app.register_blueprint(checkout_bp)
 app.register_blueprint(order_bp)
+
+@app.errorhandler(500)
+def error_500(error):
+    return render_template('500.html', error=error), 500
+
+@app.errorhandler(404)
+def error_404(error):
+    return render_template('404.html', error=error), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
