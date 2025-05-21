@@ -10,30 +10,36 @@
         height: 100px;
         object-fit: cover;
     }
+
+    .history-body {
+        max-width: 1000px;
+        width: 100%;
+    }
+    
 </style>
 {% endblock %}
 
 {% block content %}
-<main class="container w-50 mt-4">
+<main class="container history-body mt-4">
     <h2 class="mb-2">Order History</h1>
     <p class="text-muted mb-4">Check the status of recent orders, manage returns, and discover similar products</p>
     <!-- Orders List -->
     {% for order in orders %}
-    <div class="container border">
+    <div class="container border mb-1">
         <!-- Order Header -->
         <div class="border-bottom p-3 mb-2">
             <div class="row">
                 <div class="col">
-                    <div class="row text-start">
-                        <div class="col-sm-4">
+                    <div class="row text-center">
+                        <div class="col-sm-3 col-12 p-2">
                             <h5 class="text-muted">Order Number</h5>
                             <strong>{{ order.id }}</strong>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-5 col-12 p-2">
                             <h5 class="text-muted">Date Placed</h5>
                             <strong>{{ order.created_at.strftime('%b %d, %Y') }}</strong>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-4 col-12 p-2">
                             <h5 class="text-muted">Total Amount</h5>
                             <strong>${{ "%.2f"|format(order.total_amount) }}</strong>
                         </div>
@@ -46,15 +52,15 @@
         <div class="container p-2">
             {% for item in order.items %}
             <div class="row mb-4 align-items-center">
-                <div class="col-auto">
+                <div class="col-md-2 col-4">
                     <img src="{{ url_for('static', filename=item.product.image) }}" class="product-image" alt="{{ item.product.name }}">
                 </div>
-                <div class="col-6">
+                <div class="col-md-6 col-8 p-3">
                     <h5 class="mb-1">{{ item.product.name }}</h5>
                     <p class="mb-1 text-muted">{{ item.product.description }}</p>
                     <p class="mb-0">Qty: {{ item.quantity }}</p>
                 </div>
-                <div class="col-auto text-end">
+                <div class="col-md-4 col-12 text-center p-3">
                     <h5 class="mb-3">${{ "%.2f"|format(item.price * item.quantity) }}</h5>
                     <span class="text-success"><i class="bi bi-check-circle-fill"></i> Delivered On {{ order.created_at.strftime('%B %d, %Y') }}</span>
                 </div>

@@ -7,6 +7,15 @@ from api.models.shipping_method import ShippingMethod
 from api.models.order_item import OrderItem
 
 class OrderService(BaseService):
+    def get_all_orders(self):
+        try:
+            cur = self.get_cursor()
+            cur.execute("SELECT * FROM orders ORDER BY id")
+            rows = cur.fetchall()
+            cur.close()
+            return [Order(row[0], row[1], row[2], row[3], row[4], row[5], row[6]) for row in rows]
+        except Exception as e:
+            raise Exception(f"Database error: {str(e)}")
     def get_all_shipping_methods(self):
         try:
             cur = self.get_cursor()
@@ -54,12 +63,11 @@ class OrderService(BaseService):
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
 
-    def get_orders_by_user_id(self, user_id):
+    def get_orders_by_user_id(self, user_id=None):
         try:
             cur = self.get_cursor()
-            
-            # Get all orders for the user
-            cur.execute("""
+            if user_id:
+                cur.execute("""
                 SELECT 
                 o.id, o.user_id, o.cart_id, o.status, o.total_amount, o.created_at,
                 s.recipient_name, s.address, s.phone, sm.id as delivery_method_id, sm.name as delivery_method_name
@@ -69,6 +77,16 @@ class OrderService(BaseService):
                 WHERE o.user_id = %s
                 ORDER BY o.created_at DESC
             """, (user_id,))
+            else:
+                cur.execute("""
+                SELECT 
+                    o.id, o.user_id, o.cart_id, o.status, o.total_amount, o.created_at,
+                    s.recipient_name, s.address, s.phone, sm.id as delivery_method_id, sm.name as delivery_method_name
+                FROM orders o
+                JOIN shipments s ON o.shipment_id = s.id
+                JOIN shipping_methods sm ON s.shipping_method_id = sm.id
+                ORDER BY o.created_at DESC
+            """)
             orders = []
             for row in cur.fetchall():
                 order = Order(

@@ -19,7 +19,7 @@ def login():
         return render_template('login.html', error='Invalid email or password')
 
     session['user_id'] = user.id
-    session['role'] = user.role
+    session['role'] = user.role.name
     return redirect(url_for('main.home'))
 
 @auth_bp.route('/register', methods=['GET'])

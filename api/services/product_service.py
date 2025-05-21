@@ -47,7 +47,7 @@ class ProductService(BaseService):
         try:
             cur = self.get_cursor()
             cur.execute("""
-                SELECT p.id, p.name, p.price, p.category_id, c.name AS category_name
+                SELECT p.id, p.name, p.price, p.image, p.description, p.category_id, c.name AS category_name
                 FROM products p
                 JOIN categories c ON p.category_id = c.id
                 WHERE p.id = %s
@@ -62,7 +62,9 @@ class ProductService(BaseService):
                 id=row[0],
                 name=row[1],
                 price=float(row[2]),
-                category=Category(id=row[3], name=row[4])
+                image=row[3],
+                description=row[4],
+                category=Category(id=row[5], name=row[6])
             )
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
@@ -76,8 +78,8 @@ class ProductService(BaseService):
 
             cur = self.get_cursor()
             cur.execute(
-                "INSERT INTO products (name, price, category_id) VALUES (%s, %s, %s)",
-                (data['name'], data['price'], data['category_id'])
+                "INSERT INTO products (name, price, category_id, image, description) VALUES (%s, %s, %s, %s, %s)",
+                (data['name'], data['price'], data['category_id'], data['image'], data['description'])
             )
             self.mysql.connection.commit()
             product_id = cur.lastrowid
@@ -98,7 +100,7 @@ class ProductService(BaseService):
 
             update_fields = []
             values = []
-            for field in ['name', 'price', 'category_id']:
+            for field in ['name', 'price', 'category_id', 'image', 'description']:
                 if field in data:
                     update_fields.append(f"{field} = %s")
                     values.append(data[field])
@@ -146,3 +148,44 @@ class ProductService(BaseService):
             ]
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
+
+    def get_category_by_id(self, id):
+        try:
+            cur = self.get_cursor()
+            cur.execute("SELECT * FROM categories WHERE id = %s", (id,))
+            row = cur.fetchone()
+            cur.close()
+
+            if row is None:
+                raise Exception("Category not found")
+
+            return Category(id=row[0], name=row[1])
+        except Exception as e:
+            raise Exception(f"Database error: {str(e)}")
+    
+    def create_category(self, name):
+        try:
+            cur = self.get_cursor()
+            cur.execute(
+                "INSERT INTO categories (name) VALUES (%s)",
+                (name,)
+            )
+            self.mysql.connection.commit()
+            category_id = cur.lastrowid
+            cur.close()
+
+            return self.get_category_by_id(category_id)
+        except Exception as e:
+            raise Exception(f"Database error: {str(e)}")
+
+
+    def update_category(self, id, name):
+        try:
+            cur = self.get_cursor()
+            cur.execute("UPDATE categories SET name = %s WHERE id = %s", (name, id))
+            self.mysql.connection.commit()
+            cur.close()
+            return self.get_category_by_id(id)
+        except Exception as e:
+            raise Exception(f"Database error: {str(e)}")    
+        
