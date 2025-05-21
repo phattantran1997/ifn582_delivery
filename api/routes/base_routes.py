@@ -23,3 +23,11 @@ def home():
     products = product_service.get_all_products(category=category, search=search)
     categories = product_service.get_categories()
     return render_template('homepage.html', products=products, categories=categories)
+
+@main_bp.route('/500')
+def error_500():
+    return render_template('500.html')
+
+@main_bp.route('/404')
+def error_404():
+    return render_template('404.html')
