@@ -16,7 +16,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('main.home') }}">
-                <i class="fas fa-truck me-2"></i>IFN582 Delivery
+                <i class="fas fa-truck"></i>IFN582 Delivery
             </a>
             {% block searchbox %}{% endblock %}
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -25,33 +25,41 @@
             <div class="collapse navbar-collapse" id="navbarNav"> 
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('main.home') }}">Home</a>
+                        <a class="nav-link {% if request.endpoint == 'main.home' %}active{% endif %}" href="{{ url_for('main.home') }}">
+                            <i class="fas fa-home"></i>Home
+                        </a>
                     </li>
                     {% block navitems %}{% endblock %}
                     {% if 'user_id' in session %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('order.history') }}">
-                                <i class="fas fa-map-marker-alt me-1"></i>Order
+                            <a class="nav-link {% if request.endpoint == 'order.history' %}active{% endif %}" href="{{ url_for('order.history') }}">
+                                <i class="fas fa-history"></i>Order History
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('cart.cart_page') }}">
-                                <i class="fas fa-shopping-cart me-1"></i>Cart
+                            <a class="nav-link {% if request.endpoint == 'cart.cart_page' %}active{% endif %}" href="{{ url_for('cart.cart_page') }}">
+                                <i class="fas fa-shopping-cart"></i>Cart
                             </a>
                         </li>
                         <li class="nav-item">
                             <form action="{{ url_for('auth.logout') }}" method="POST">
-                                <button type="submit" class="nav-link">Logout</button>
+                                <button type="submit" class="btn-logout">
+                                    <i class="fas fa-sign-out-alt"></i>Logout
+                                </button>
                             </form>
                         </li>
                         {% if session['role'] == 'admin' %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin.home') }}">Admin</a>
+                                <a class="nav-link {% if request.endpoint == 'admin.home' %}active{% endif %}" href="{{ url_for('admin.home') }}">
+                                    <i class="fas fa-user-shield"></i>Admin
+                                </a>
                             </li>
                         {% endif %}
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                            <a class="nav-link {% if request.endpoint == 'auth.login' %}active{% endif %}" href="{{ url_for('auth.login') }}">
+                                <i class="fas fa-sign-in-alt"></i>Login
+                            </a>
                         </li>
                     {% endif %}
                 </ul>

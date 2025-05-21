@@ -3,15 +3,29 @@ from api.models.category import Category
 from api.models.product import Product
 
 class ProductService(BaseService):
-    def get_all_products(self):
+    def get_all_products(self, category=None, search=None):
         try:
             cur = self.get_cursor()
-            cur.execute("""
-                SELECT p.id, p.name, p.price, p.category_id, c.name AS category_name
+            query = """
+                SELECT p.id, p.name, p.price, p.image, p.description, p.category_id, c.name AS category_name
                 FROM products p
                 JOIN categories c ON p.category_id = c.id
-                ORDER BY p.id
-            """)
+                WHERE 1=1
+            """
+            params = []
+
+            if category:
+                query += " AND c.name = %s"
+                params.append(category)
+
+            if search:
+                query += " AND (p.name LIKE %s OR p.description LIKE %s OR c.name LIKE %s)"
+                search_term = f"%{search}%"
+                params.extend([search_term, search_term, search_term])
+
+            query += " ORDER BY p.id"
+            
+            cur.execute(query, params)
             products = cur.fetchall()
             cur.close()
 
@@ -20,7 +34,9 @@ class ProductService(BaseService):
                     id=row[0],
                     name=row[1],
                     price=float(row[2]),
-                    category=Category(id=row[3], name=row[4])
+                    image=row[3],
+                    description=row[4],
+                    category=Category(id=row[5], name=row[6])
                 )
                 for row in products
             ]

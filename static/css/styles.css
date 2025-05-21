@@ -10,58 +10,86 @@ body {
 
 main {
     flex: 1;
+    padding: 2rem 0;
 }
 
 /* Navigation Bar */
 .navbar {
     margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: #0d6efd;
 }
 
-.navbar-brand img {
-    width: 50px;
-    height: auto;
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.navbar-brand {
+    font-size: 1.2rem;
+    color: #ffffff;
 }
+
+.navbar-brand i {
+    color: #ffffff;
+    margin-right: 0.3rem;
+}
+
 .nav-link {
-    position: relative;
-    font-weight: 500;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+}
+
+.nav-link i {
+    margin-right: 0.3rem;
 }
 
 .nav-link.active {
-    color: #0d6efd !important;
+    background-color: #0a58ca;
+    color: #ffffff;
 }
 
-.nav-link.active:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: #0d6efd;
-}
-.search-box {
-    max-width:100%;
-    width: 300px;
-    border-radius: 5px 0px 0px 5px;
+.navbar-nav .btn-logout {
+    background: none;
     border: none;
+    color: #ffffff;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+}
+
+.navbar-nav .btn-logout i {
+    margin-right: 0.3rem;
+}
+
+/* Search Box */
+.search-box {
+    max-width: 100%;
+    width: 300px;
+    border-radius: 6px 0 0 6px;
+    border: none;
+    padding: 0.6rem 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .search-btn {
-    border-radius: 0px 5px 5px 0px;
+    border-radius: 0 6px 6px 0;
     border-left: 1px solid #dee2e6;
+    padding: 0.6rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    background-color: #0a58ca;
 }
 
 /* Product Cards */
 .card {
     margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    height: 100%;
     border: none;
+    border-radius: 8px;
+    height: 100%;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 .card a {
@@ -72,14 +100,17 @@ main {
 .card-img-top {
     height: 200px;
     object-fit: cover;
+    border-radius: 8px 8px 0 0;
 }
 
 .card-title {
     font-weight: 600;
+    margin-bottom: 0.5rem;
 }
 
 .card-text {
     color: #6c757d;
+    margin-bottom: 1rem;
 }
 
 .price {
@@ -91,7 +122,8 @@ main {
 .card-footer {
     background-color: white;
     border-top: 1px solid #eee;
-    padding: 10px;
+    padding: 1rem;
+    border-radius: 0 0 8px 8px;
 }
 
 /* Product Details Page */
@@ -116,27 +148,36 @@ main {
     object-fit: cover;
     border-radius: 4px;
 }
+
 /* Buttons */
 .btn-primary {
     background-color: #0d6efd;
     border: none;
-    padding: 8px 16px;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0a58ca;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .btn-outline-primary {
     border-color: #0d6efd;
     color: #0d6efd;
+    border-radius: 6px;
+    transition: all 0.3s ease;
 }
 
 .btn-outline-primary:hover {
     background-color: #0d6efd;
     color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.btn-outline-primary.active {
-    background-color: #0d6efd;
-    color: white;
-}
 /* Badges */
 .badge {
     padding: 6px 10px;
@@ -147,13 +188,13 @@ main {
 footer {
     background-color: #f8f9fa;
     border-top: 1px solid #e9ecef;
-    padding: 2rem 0;
+    padding: 3rem 0;
     margin-top: auto;
 }
 
 .footer-heading {
     font-weight: 600;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     color: #212529;
 }
 
@@ -162,30 +203,55 @@ footer {
     text-decoration: none;
     transition: color 0.3s ease;
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
 }
 
 .footer-link:hover {
     color: #0d6efd;
+    transform: translateX(5px);
 }
 
 .social-icon {
     color: #6c757d;
     font-size: 1.5rem;
     margin-right: 1rem;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .social-icon:hover {
     color: #0d6efd;
+    transform: translateY(-3px);
 }
 
 .copyright {
     color: #6c757d;
     font-size: 0.875rem;
+    margin-top: 2rem;
 }
 
-/* Responsive adjustments */
+/* Responsive Design */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background-color: #0d6efd;
+        padding: 1rem;
+    }
+    
+    .nav-link {
+        margin: 0.3rem 0;
+    }
+    
+    .navbar-nav .btn-logout {
+        width: 100%;
+        text-align: left;
+        margin: 0.3rem 0;
+    }
+
+    .search-box {
+        width: 100%;
+        margin: 1rem 0;
+    }
+}
+
 @media (max-width: 768px) {
     .card-img-top {
         height: 180px;
@@ -197,6 +263,10 @@ footer {
     
     .footer-column {
         margin-bottom: 2rem;
+    }
+
+    .social-icon {
+        margin: 0 0.5rem;
     }
 }
 
