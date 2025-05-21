@@ -58,3 +58,12 @@
 .btn-icon:hover {
     color: #dc3545;
 }
+
+.nav-link {
+    color: #216fec;
+}
+
+.nav-link:hover {
+    background-color: #d6d1d1e6;
+}
+    
