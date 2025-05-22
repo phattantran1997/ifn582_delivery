@@ -118,8 +118,10 @@ INSERT INTO roles (name, description) VALUES
 ('admin', 'Admin role'),
 ('user', 'User role');
 
-INSERT INTO permissions (name, description) VALUES 
-('manage_products', 'Manage products permission');
+INSERT INTO permissions (name, description) VALUES ('manage_products', 'Manage products permissionsd1');s
+
+
+
 
 INSERT INTO role_permissions (role_id, permission_id) VALUES 
 (1, 1);
