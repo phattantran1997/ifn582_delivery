@@ -60,10 +60,10 @@
 }
 
 .content .nav-link {
-    color: #216fec;
+    color: #216fec !important;
 }
 
 .content .nav-link:hover {
-    background-color: #d6d1d1e6;
+    background-color: #d6d1d1e6 !important;
 }
     
