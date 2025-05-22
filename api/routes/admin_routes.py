@@ -1,4 +1,5 @@
 import os
+from utils.decorators import admin_required
 from flask import Blueprint, render_template, request, redirect, url_for
 from api.routes.base_routes import BaseRoute
 from api.services.product_service import ProductService
@@ -9,11 +10,13 @@ admin_route = BaseRoute(ProductService)
 order_route = BaseRoute(OrderService)
 
 @admin_bp.route('/', methods=['GET'])
+@admin_required
 def home():
     products = admin_route.service.get_all_products()
     return render_template('admin.html', products=products, section='products')
 
 @admin_bp.route('/products/add', methods=['GET'])
+@admin_required
 def add_product_page():
     categories = admin_route.service.get_categories()
     if request.args.get('id'):
@@ -64,6 +67,7 @@ def update_product(id):
     return redirect(url_for('admin.home'))
 
 @admin_bp.route('/category/add', methods=['GET'])
+@admin_required
 def add_category_page():
     categories = admin_route.service.get_categories()
     if request.args.get('id'):
@@ -92,11 +96,13 @@ def update_category(id):
     
 
 @admin_bp.route('/categories', methods=['GET'])
+@admin_required
 def categories():
     categories = admin_route.service.get_categories()
     return render_template('category.html', categories=categories, section='categories')
 
 @admin_bp.route('/orders', methods=['GET'])
+@admin_required
 def orders():
     orders = order_route.service.get_orders_by_user_id()
     return render_template('admin.html', orders=orders, section='orders')

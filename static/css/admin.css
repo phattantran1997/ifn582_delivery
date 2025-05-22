@@ -59,11 +59,11 @@
     color: #dc3545;
 }
 
-.nav-link {
-    color: #216fec;
+.content .nav-link {
+    color: #216fec !important;
 }
 
-.nav-link:hover {
-    background-color: #d6d1d1e6;
+.content .nav-link:hover {
+    background-color: #d6d1d1e6 !important;
 }
     

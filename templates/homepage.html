@@ -6,7 +6,7 @@
 {% block searchbox %}
     <form class="d-flex" action="{{ url_for('main.home') }}" method="GET">
         <input class="search-box form-control" type="search" name="search" placeholder="Search items..." value="{{ request.args.get('search', '') }}">
-        <button class="search-btn btn bg-white" type="submit">Search</button>
+        <button class="btn search-btn bg-white" type="submit">Search</button>
     </form>
 {% endblock %}
 {% block content %}
