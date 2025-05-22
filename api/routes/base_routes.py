@@ -27,3 +27,7 @@ def home():
 @main_bp.route('/error')
 def error():
     return render_template('error.html', error="Something went wrong")
+
+@main_bp.route('/500')
+def internal_server_error():
+    raise Exception("Internal Server Error")
