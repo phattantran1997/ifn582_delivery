@@ -23,3 +23,7 @@ def home():
     products = product_service.get_all_products(category=category, search=search)
     categories = product_service.get_categories()
     return render_template('homepage.html', products=products, categories=categories)
+
+@main_bp.route('/error')
+def error():
+    return render_template('error.html', error="Something went wrong")
