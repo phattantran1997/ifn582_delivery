@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, redirect, request, session, render_template, url_for
+from flask import Blueprint, flash, redirect, request, session, render_template, url_for
 from api.services.auth_service import AuthService
 from api.routes.base_routes import BaseRoute 
 
@@ -13,10 +13,12 @@ def login_page():
 def login():
     user = auth_route.service.login(request.form)
     if not user:
-        return render_template('login.html', error='Invalid email or password')
+        flash('invalid email or passsword', 'error')
+        return render_template('login.html')
     # validate password
     if not auth_route.service.verify_password(request.form['password'], user.password):
-        return render_template('login.html', error='Invalid email or password')
+        flash('invalid email or passsword', 'error')
+        return render_template('login.html')
 
     session['user_id'] = user.id
     session['role'] = user.role.name
@@ -29,10 +31,12 @@ def register_page():
 @auth_bp.route('/register', methods=['POST'])
 def register():
     if request.form['password'] != request.form['confirm_password']:
-        return render_template('register.html', error='Passwords do not match')
+        flash('Passwords do not match', 'error')
+        return render_template('register.html')
 
     if auth_route.service.exist(request.form['email']):
-        return render_template('register.html', error='Email already exists')
+        flash('Email already exists', 'error')
+        return render_template('register.html')
 
     user = auth_route.service.register(request.form)
     return redirect(url_for('auth.login_page'))

@@ -8,12 +8,6 @@
     <form id="login-form" action="{{ url_for('auth.login') }}" method="POST" class="form-signin py-5 px-4" >
         <img id="logo" class="mb-2 w-50 d-block mx-auto" src="{{ url_for('static', filename='images/logo.png') }}" alt="Store Logo">
         <p class="text-muted text-center mb-3">Please login to your account</p> 
-        {% if error %}
-            <div class="alert alert-danger">{{ error }}</div>
-        {% endif %}
-        {% if success %}
-            <div class="alert alert-success">{{ success }}</div>
-        {% endif %}
         <div class="form-floating">
             <input type="email" name="email" class="form-control rounded-top border-bottom-0" id="floatingEmail" placeholder="name@example.com">
             <label for="floatingEmail">Email</label>
