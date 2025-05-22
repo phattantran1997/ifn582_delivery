@@ -31,6 +31,13 @@
                     </li>
                     {% block navitems %}{% endblock %}
                     {% if 'user_id' in session %}
+                        {% if session['role'] == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.endpoint == 'admin.home' %}active{% endif %}" href="{{ url_for('admin.home') }}">
+                                    <i class="fas fa-user-shield"></i>Admin
+                                </a>
+                            </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link {% if request.endpoint == 'order.history' %}active{% endif %}" href="{{ url_for('order.history') }}">
                                 <i class="fas fa-history"></i>Order History
@@ -48,13 +55,6 @@
                                 </button>
                             </form>
                         </li>
-                        {% if session['role'] == 'admin' %}
-                            <li class="nav-item">
-                                <a class="nav-link {% if request.endpoint == 'admin.home' %}active{% endif %}" href="{{ url_for('admin.home') }}">
-                                    <i class="fas fa-user-shield"></i>Admin
-                                </a>
-                            </li>
-                        {% endif %}
                     {% else %}
                         <li class="nav-item">
                             <a class="nav-link {% if request.endpoint == 'auth.login' %}active{% endif %}" href="{{ url_for('auth.login') }}">

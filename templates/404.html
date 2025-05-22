@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error{% endblock %}
+
+{% block content %}
+<div class="container text-center py-5">
+    <h1 class="display-3 text-danger mb-3">404</h1>
+    <h2 class="mb-4">Not Found</h2>
+    <p class="lead mb-4">
+        Oops! The page you are looking for does not exist.<br>
+        Please try again later or contact support if the problem persists.
+    </p>
+    <a href="{{ url_for('main.home') }}" class="btn btn-primary">Back to Homepage</a>
+</div>
+{% endblock %}

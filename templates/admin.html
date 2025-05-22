@@ -1,55 +1,23 @@
 {% extends "base.html" %}
 {% block title %}Admin{% endblock %}
 {% block styles %}
-<style>
-    .table th {
-        padding: 25px;
-    }
-    .table td {
-        vertical-align: middle;
-        padding: 20px; 
-    }
-    .thumbnail {
-        width: 75px;
-        height: auto;
-        object-fit: cover;
-    }
-    .badge {
-        padding: 6px 12px;
-        border-radius: 16px;
-        font-size: 0.85rem;
-        font-weight: 500;
-    }
-    .status-success {
-        background-color: #e7f4ee;
-        color: #0a6634;
-    }
-    .status-warning {
-        background-color: #fff4e5;
-        color: #945d00;
-    }
-    .status-info {
-        padding: 6px 12px;
-        background-color: #f8f9fa;
-        color: #515354;
-        border: 1px solid #dee2e6;
-    }
-    .text-muted {
-        color: #6c757d !important;
-        font-size: 0.9rem;
-    }
-    .btn-icon {
-        background: none;
-        border: none;
-    }
-    .btn-icon:hover {
-        color: #dc3545;
-    }
-</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 {% endblock %}
 {% block content %}
 <div class="container">
-    <div class="container py-4 m-auto w-75">
+    <ul class="nav nav-tabs mt-4">
+        <li class="nav-item">
+            <a class="nav-link {% if section == 'products' %}active{% endif %}" href="{{ url_for('admin.home') }}">Products</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if section == 'categories' %}active{% endif %}" href="{{ url_for('admin.categories') }}">Categories</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if section == 'orders' %}active{% endif %}" href="{{ url_for('admin.orders') }}">Orders</a>
+        </li>
+    </ul>
+
+    <div class="container py-4 m-auto">
         <div class="d-flex justify-content-between align-items-center mb-3 p-1">
             <div>
                 <h4 class="mb-1">Products</h4>
@@ -84,7 +52,7 @@
                                             <a href="{{ url_for('admin.add_product_page', id=product.id) }}" class="bi bi-pencil-square"></a>
                                         </button>
                                     </div>
-                                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Product Image" class="thumbnail me-3">
+                                    <img src="{{ url_for('static', filename=product.image if product.image else 'images/logo.png') }}" alt="Product Image" class="thumbnail me-3">
                                     <div>
                                         <div class="fw-semibold">{{ product.name }}</div>
                                         <div class="text-muted">ID: {{ product.id }}</div>
