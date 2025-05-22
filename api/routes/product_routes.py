@@ -23,7 +23,7 @@ def get_categories():
 def get_product(id):
     try:
         product = product_route.service.get_product_by_id(id)
-        return jsonify({'status': 'success', 'data': product}), 200
+        return render_template('product_details.html', product=product)
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 404 if str(e) == "Product not found" else 500
 
@@ -52,7 +52,3 @@ def delete_product(id):
         return jsonify({'status': 'success', 'message': 'Product deleted successfully'}), 200
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 404 if str(e) == "Product not found" else 500
-
-@product_bp.route('/details/<category>/<product>')
-def product_details(category, product):
-    return render_template('product_details.html', category=category, product=product)

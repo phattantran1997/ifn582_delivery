@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}IFN582 Delivery{% endblock %}
+{% block styles %}
+<link href="{{ url_for('static', filename='css/product-details.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container mt-4">
+        <!-- Product Details Content -->
+        <div class="row">
+            <!-- Product Images -->
+            <div class="col-md-6">
+                <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="active">
+                            <img src="{{ url_for('static', filename=product.image.lstrip('/')) }}" class="d-block w-100" alt="{{ product.name }}">
+                        </div>
+                        <div>
+                            <img src="{{ url_for('static', filename=product.image.lstrip('/')) }}" class="d-block w-100" alt="{{ product.name }}">
+                        </div>
+                        <div>
+                            <img src="{{ url_for('static', filename=product.image.lstrip('/')) }}" class="d-block w-100" alt="{{ product.name }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Information -->
+            <div class="col-md-6">
+                <h1>{{ product.name }}</h1>
+                <p class="text-muted mb-4">SKU: {{ product.id }} | Category: {{ product.category.name }} | Best Seller</p>
+                <h2 class="text-primary mb-3">${{ "%.2f"|format(product.price) }}</h2>
+                
+                <div class="mb-4">
+                    <h4>Description</h4>
+                    <p>{{ product.description }}</p>
+                </div>
+
+                <!-- Add to Cart Section -->
+                <div class="mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <select class="form-select" id="quantity">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </div>
+                        {% if 'user_id' in session %}
+                        <div class="col-md-8">
+                            <a href="../cart.html" class="btn btn-primary btn-lg w-100 mt-3">
+                                Add to Cart
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Specifications -->
+                <div class="mt-4">
+                    <h4>Specifications</h4>
+                    <table class="table">
+                        <tr>
+                            <td>Dimensions</td>
+                            <td>112"W x 84"D x 34"H</td>
+                        </tr>
+                        <tr>
+                            <td>Weight</td>
+                            <td>220 lbs</td>
+                        </tr>
+                        <tr>
+                            <td>Materials</td>
+                            <td>Premium Fabric, Solid Wood Frame</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %} 

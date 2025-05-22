@@ -33,7 +33,7 @@
             {% for product in products %}
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    <a href="{{ url_for('product.product_details', category=product.category.name.lower(), product=product.name.lower().replace(' ', '-')) }}" class="text-decoration-none">
+                    <a href="{{ url_for('product.get_product', id=product.id) }}" class="text-decoration-none">
                         <img src="{{ url_for('static', filename=product.image.lstrip('/')) }}" class="card-img-top" alt="{{ product.name }}">
                         <div class="card-body">
                             <h5 class="card-title text-dark">{{ product.name }}</h5>
