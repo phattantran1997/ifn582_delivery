@@ -16,12 +16,6 @@
                         <div class="active">
                             <img src="{{ url_for('static', filename=product.image.lstrip('/')) }}" class="d-block w-100" alt="{{ product.name }}">
                         </div>
-                        <div>
-                            <img src="{{ url_for('static', filename=product.image.lstrip('/')) }}" class="d-block w-100" alt="{{ product.name }}">
-                        </div>
-                        <div>
-                            <img src="{{ url_for('static', filename=product.image.lstrip('/')) }}" class="d-block w-100" alt="{{ product.name }}">
-                        </div>
                     </div>
                 </div>
             </div>
@@ -40,48 +34,19 @@
                 <!-- Add to Cart Section -->
                 <div class="mb-4">
                     <div class="row align-items-center">
-                        <div class="col-md-4">
-                            <label for="quantity" class="form-label">Quantity</label>
-                            <select class="form-select" id="quantity">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                            </select>
-                        </div>
                         {% if 'user_id' in session %}
-                        <div class="col-md-8">
-                            <a href="../cart.html" class="btn btn-primary btn-lg w-100 mt-3">
-                                Add to Cart
-                            </a>
-                        </div>
+                        <form action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="POST">
+                            {{form.hidden_tag()}}
+                            <div class="col-md-4">
+                                {{ form.quantity.label(class="form-label") }}
+                                {{ form.quantity(class="form-select") }}
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.submit(class="btn btn-primary p-2 w-50 mt-4") }}
+                            </div>
+                        </form>
                         {% endif %}
                     </div>
-                </div>
-
-                <!-- Specifications -->
-                <div class="mt-4">
-                    <h4>Specifications</h4>
-                    <table class="table">
-                        <tr>
-                            <td>Dimensions</td>
-                            <td>112"W x 84"D x 34"H</td>
-                        </tr>
-                        <tr>
-                            <td>Weight</td>
-                            <td>220 lbs</td>
-                        </tr>
-                        <tr>
-                            <td>Materials</td>
-                            <td>Premium Fabric, Solid Wood Frame</td>
-                        </tr>
-                    </table>
                 </div>
             </div>
         </div>

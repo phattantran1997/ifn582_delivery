@@ -155,6 +155,33 @@ class CartService(BaseService):
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
 
+    def get_cart_item_by_product_id(self, cart_id: int, product_id: int):
+        try:
+            cur = self.get_cursor()
+            cur.execute("SELECT * FROM cart_items WHERE cart_id = %s AND product_id = %s", (cart_id, product_id))
+            row = cur.fetchone()
+            cur.close()
+            if row is None:
+                return None
+            return CartItem(id=row[0], cart_id=row[1], product=Product(id=row[2]), quantity=row[3], price=row[4])
+        except Exception as e:
+            raise Exception(f"Database error: {str(e)}")
+
+    def add_to_cart(self, cart_id: int, product_id: int, quantity: int = 1):
+        try:
+            cur = self.get_cursor()
+            cur.execute("SELECT price FROM products WHERE id = %s", (product_id,))
+            price = cur.fetchone()
+            if price is None:
+                raise Exception("Product not found")
+
+            cur.execute("INSERT INTO cart_items (cart_id, product_id, quantity, price) VALUES (%s, %s, %s, %s)", (cart_id, product_id, quantity, price))
+            self.mysql.connection.commit()
+            cur.close()
+            return True
+        except Exception as e:
+            raise Exception(f"Database error: {str(e)}")
+
     def delete_cart_item(self, cart_item_id: int):
         try:
             cur = self.get_cursor()

@@ -1,9 +1,10 @@
 import decimal
 
-from flask import Blueprint, jsonify, session, render_template
+from flask import Blueprint, session, render_template, request, flash, redirect, url_for
 from utils.decorators import user_required
 from api.services.cart_service import CartService
 from api.routes.base_routes import BaseRoute
+from api.forms.cart_form import AddToCartForm
 
 cart_bp = Blueprint('cart', __name__, url_prefix='/cart')
 cart_route = BaseRoute(CartService)
@@ -33,9 +34,7 @@ def minus_quantity(cart_id, cart_item_id):
             return render_template('cart.html', cart=cart, subtotal=subtotal, tax=tax, total=total)
 
         cart_route.service.update_cart_item_quantity(cart_item_id, -1)
-        cart = cart_route.service.get_cart_by_id(cart_id)
-        subtotal, tax, total = _calculate_total(cart.id)
-        return render_template('cart.html', cart=cart, subtotal=subtotal, tax=tax, total=total)
+        return redirect(url_for('cart.cart_page'))
     except Exception as e:
         return render_template('error.html', error=str(e))
 
@@ -46,9 +45,7 @@ def plus_quantity(cart_id, cart_item_id):
         if not _is_self_cart(cart_id):
             return render_template('error.html', error='You are not authorized to update this cart item')
         cart_route.service.update_cart_item_quantity(cart_item_id, 1)
-        cart = cart_route.service.get_cart_by_id(cart_id)
-        subtotal, tax, total = _calculate_total(cart.id)
-        return render_template('cart.html', cart=cart, subtotal=subtotal, tax=tax, total=total)
+        return redirect(url_for('cart.cart_page'))
     except Exception as e:
         return render_template('error.html', error=str(e))
 
@@ -59,11 +56,38 @@ def delete_cart_item(cart_id, cart_item_id):
         if not _is_self_cart(cart_id):
             return render_template('error.html', error='You are not authorized to delete this cart item')
         cart_route.service.delete_cart_item(cart_item_id)
-        cart = cart_route.service.get_cart_by_id(cart_id)
-        subtotal, tax, total = _calculate_total(cart.id)
-        return render_template('cart.html', cart=cart, subtotal=subtotal, tax=tax, total=total)
+        return redirect(url_for('cart.cart_page'))
     except Exception as e:
         return render_template('error.html', error=str(e))
+
+@cart_bp.route('/add_to_cart', methods=['POST'])
+@user_required
+def add_to_cart():
+    product_id = request.args.get('product_id')
+    form = AddToCartForm(request.form)
+    try:
+        user_id = session.get('user_id')
+        if user_id is None:
+            flash('Please log in first', 'error')
+            return redirect(url_for('auth.login_page'))
+
+        if form.validate_on_submit():
+            cart = cart_route.service.get_cart_by_user_id(user_id)
+            cart_item = cart_route.service.get_cart_item_by_product_id(cart.id, product_id)
+            # if cart item exists, just update quantity
+            if cart_item is not None:
+                cart_route.service.update_cart_item_quantity(cart_item.id, form.quantity.data)
+            else:
+                cart_route.service.add_to_cart(cart.id, product_id, form.quantity.data)
+
+            flash('Product added to cart', 'success')
+
+        return redirect(url_for('cart.cart_page'))
+
+    except Exception as e:
+        flash('Failed to add product to cart', 'error')
+        return redirect(url_for('product.get_product', id=product_id))
+
 
 def _calculate_total(cart_id: int):
     subtotal = cart_route.service.get_cart_subtotal(cart_id)
