@@ -31,12 +31,12 @@ class ProductService(BaseService):
 
             return [
                 Product(
-                    id=row[0],
-                    name=row[1],
-                    price=float(row[2]),
-                    image=row[3],
-                    description=row[4],
-                    category=Category(id=row[5], name=row[6])
+                    id=row['id'],
+                    name=row['name'],
+                    price=float(row['price']),
+                    image=row['image'],
+                    description=row['description'],
+                    category=Category(id=row['category_id'], name=row['category_name'])
                 )
                 for row in products
             ]
@@ -59,12 +59,12 @@ class ProductService(BaseService):
                 raise Exception("Product not found")
 
             return Product(
-                id=row[0],
-                name=row[1],
-                price=float(row[2]),
-                image=row[3],
-                description=row[4],
-                category=Category(id=row[5], name=row[6])
+                id=row['id'],
+                name=row['name'],
+                price=float(row['price']),
+                image=row['image'],
+                description=row['description'],
+                category=Category(id=row['category_id'], name=row['category_name'])
             )
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
@@ -143,7 +143,10 @@ class ProductService(BaseService):
             cur.close()
 
             return [
-                Category(id=row[0], name=row[1])
+                Category(
+                    id=row['id'], 
+                    name=row['name']
+                )
                 for row in categories
             ]
         except Exception as e:
@@ -159,7 +162,10 @@ class ProductService(BaseService):
             if row is None:
                 raise Exception("Category not found")
 
-            return Category(id=row[0], name=row[1])
+            return Category(
+                id=row['id'], 
+                name=row['name']
+            )
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
     
