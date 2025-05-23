@@ -5,14 +5,25 @@ from api.models.product import Product
 from api.models.category import Category
 
 class CartService(BaseService):
+    def create_cart(self, user_id: int):
+        try:
+            cur = self.get_cursor()
+            cur.execute("INSERT INTO carts (user_id, status) VALUES (%s, 'active')", (user_id,))
+            self.mysql.connection.commit()
+            cur.close()
+            return Cart(id=cur.lastrowid, user_id=user_id, status='active', cart_items=[])
+        except Exception as e:
+            raise Exception(f"Database error: {str(e)}")
+
     def get_cart_by_user_id(self, user_id: int):
         try:
             cur = self.get_cursor()
             cur.execute("""
             SELECT 
                 c.id, c.user_id, c.status, 
-                ci.id, ci.quantity, ci.price, 
-                p.id, p.name, p.description, p.image, ca.id, ca.name
+                ci.id cart_item_id, ci.quantity, ci.price, 
+                p.id product_id, p.name product_name, p.description product_description, p.image product_image,
+                ca.id category_id, ca.name category_name
             FROM carts c
             LEFT JOIN cart_items ci ON c.id = ci.cart_id
             LEFT JOIN products p ON ci.product_id = p.id
@@ -26,27 +37,27 @@ class CartService(BaseService):
                 raise Exception("Cart not found")
 
             if len(rows) == 0:
-                return Cart()
+                return None
 
-            cart = Cart(id=rows[0][0], user_id=rows[0][1], status=rows[0][2], cart_items=[])
+            cart = Cart(id=rows[0]['id'], user_id=rows[0]['user_id'], status=rows[0]['status'], cart_items=[])
 
             # if cart is empty
-            if rows[0][3] is None:
+            if rows[0]['cart_item_id'] is None:
                 return cart
 
             cart.cart_items = [
                 CartItem(
-                    id=row[3],
-                    quantity=row[4],
-                    price=row[5],
+                    id=row['cart_item_id'],
+                    quantity=row['quantity'],
+                    price=row['price'],
                     product=Product(
-                        id=row[6],
-                        name=row[7],
-                        description=row[8],
-                        image=row[9],
+                        id=row['product_id'],
+                        name=row['product_name'],
+                        description=row['product_description'],
+                        image=row['product_image'],
                         category=Category(
-                            id=row[10],
-                            name=row[11]
+                            id=row['category_id'],
+                            name=row['category_name']
                         )
                     ),
                 )
@@ -62,9 +73,9 @@ class CartService(BaseService):
             cur.execute("""
             SELECT 
                 c.id, c.user_id, c.status,
-                ci.id, ci.quantity, ci.price, 
-                p.id, p.name, p.description,
-                p.image, ca.id, ca.name
+                ci.id cart_item_id, ci.quantity, ci.price, 
+                p.id product_id, p.name product_name, p.description product_description,
+                p.image product_image, ca.id category_id, ca.name category_name
             FROM carts c
             LEFT JOIN cart_items ci ON c.id = ci.cart_id
             LEFT JOIN products p ON ci.product_id = p.id
@@ -74,29 +85,29 @@ class CartService(BaseService):
             rows = cur.fetchall()
             cur.close()
 
-            if rows is None:
-                raise Exception("Cart items not found")
+            if len(rows) == 0:
+                return None
 
-            cart = Cart(id=rows[0][0], user_id=rows[0][1], status=rows[0][2], cart_items=[])
+            cart = Cart(id=rows[0]['id'], user_id=rows[0]['user_id'], status=rows[0]['status'], cart_items=[])
 
             # if cart is empty
-            if rows[0][3] is None:
+            if rows[0]['cart_item_id'] is None:
                 return cart
 
             cart.cart_items = [
                 CartItem(
-                    id=row[3],
-                    quantity=row[4],
-                    price=row[5],
+                    id=row['cart_item_id'],
+                    quantity=row['quantity'],
+                    price=row['price'],
                     product=Product(
-                        id=row[6],
-                        name=row[7],
-                        description=row[8],
-                        image=row[9],
+                        id=row['product_id'],
+                        name=row['product_name'],
+                        description=row['product_description'],
+                        image=row['product_image'],
                         category=Category(
-                            id=row[10],
-                            name=row[11]
-                        )
+                            id=row['category_id'],
+                            name=row['category_name']
+                        ),
                     ),
                 )
                 for row in rows if row is not None
@@ -119,25 +130,21 @@ class CartService(BaseService):
             if row is None:
                 raise Exception("Cart not found")
 
-            return row[0] if row[0] is not None else 0
+            return row['subtotal'] if row['subtotal'] is not None else 0
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
 
     def get_cart_item_quantity(self, cart_item_id: int):
         try:
             cur = self.get_cursor()
-            cur.execute("""
-            SELECT quantity
-            FROM cart_items
-            WHERE id = %s
-            """, (cart_item_id,))
+            cur.execute("SELECT quantity FROM cart_items WHERE id = %s" (cart_item_id,))
             row = cur.fetchone()
             cur.close()
 
             if row is None:
                 raise Exception("Cart item not found")
 
-            return row[0] if row[0] is not None else 0
+            return row['quantity'] if row['quantity'] is not None else 0
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
 
@@ -163,7 +170,14 @@ class CartService(BaseService):
             cur.close()
             if row is None:
                 return None
-            return CartItem(id=row[0], cart_id=row[1], product=Product(id=row[2]), quantity=row[3], price=row[4])
+
+            return CartItem(
+                id=row['id'],
+                cart_id=row['cart_id'],
+                product=Product(id=row['product_id']),
+                quantity=row['quantity'],
+                price=row['price']
+            )
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
 
@@ -175,7 +189,7 @@ class CartService(BaseService):
             if price is None:
                 raise Exception("Product not found")
 
-            cur.execute("INSERT INTO cart_items (cart_id, product_id, quantity, price) VALUES (%s, %s, %s, %s)", (cart_id, product_id, quantity, price))
+            cur.execute("INSERT INTO cart_items (cart_id, product_id, quantity, price) VALUES (%s, %s, %s, %s)", (cart_id, product_id, quantity, price['price']))
             self.mysql.connection.commit()
             cur.close()
             return True

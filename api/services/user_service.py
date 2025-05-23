@@ -1,4 +1,5 @@
 from api.services.base_service import BaseService
+from api.models.user import User
 
 class UserService(BaseService):
     def get_all_users(self):
@@ -9,11 +10,11 @@ class UserService(BaseService):
             cur.close()
 
             return [
-                {
-                    'id': row[0],
-                    'username': row[1],
-                    'email': row[2]
-                }
+                User(
+                    id=row['id'],
+                    username=row['username'],
+                    email=row['email']
+                )
                 for row in users
             ]
         except Exception as e:
@@ -29,11 +30,11 @@ class UserService(BaseService):
             if user is None:
                 raise Exception("User not found")
 
-            return {
-                'id': user[0],
-                'username': user[1],
-                'email': user[2]
-            }
+            return User(
+                id=user['id'],
+                username=user['username'],
+                email=user['email']
+            )
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
 

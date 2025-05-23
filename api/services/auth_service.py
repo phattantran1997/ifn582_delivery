@@ -34,14 +34,14 @@ class AuthService(BaseService):
             cur.close()
 
             if row:
-                return User(id=row[0],
-                    username=row[1],
-                    email=row[2],
-                    password=row[3],
-                    last_login_at=row[4],
-                    created_at=row[5],
-                    updated_at=row[6],
-                    role=Role(id=row[7], name=row[8]),
+                return User(id=row['id'],
+                    username=row['username'],
+                    email=row['email'],
+                    password=row['password'],
+                    last_login_at=row['last_login_at'],
+                    created_at=row['created_at'],
+                    updated_at=row['updated_at'],
+                    role=Role(id=row['role_id'], name=row['role_name']),
                 )
 
             return None

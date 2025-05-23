@@ -16,6 +16,9 @@ def cart_page():
     user_id = session.get('user_id')
     try:
         cart = cart_route.service.get_cart_by_user_id(user_id)
+        if cart is None:
+            return render_template('cart.html', cart=cart, subtotal=0, tax=0, total=0)
+
         subtotal, tax, total = _calculate_total(cart.id)
         return render_template('cart.html', cart=cart, subtotal=subtotal, tax=tax, total=total)
     except Exception as e:
@@ -73,6 +76,10 @@ def add_to_cart():
 
         if form.validate_on_submit():
             cart = cart_route.service.get_cart_by_user_id(user_id)
+            print(cart)
+            if cart is None:
+                cart = cart_route.service.create_cart(user_id)
+
             cart_item = cart_route.service.get_cart_item_by_product_id(cart.id, product_id)
             # if cart item exists, just update quantity
             if cart_item is not None:

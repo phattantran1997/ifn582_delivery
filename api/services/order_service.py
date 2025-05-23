@@ -13,7 +13,24 @@ class OrderService(BaseService):
             cur.execute("SELECT * FROM orders ORDER BY id")
             rows = cur.fetchall()
             cur.close()
-            return [Order(row[0], row[1], row[2], row[3], row[4], row[5], row[6]) for row in rows]
+            return [Order(
+                id=row['id'],
+                user_id=row['user_id'],
+                cart_id=row['cart_id'],
+                status=row['status'],
+                total_amount=row['total_amount'],
+                created_at=row['created_at'],
+                shipment=Shipment(
+                    recipient_name=row['recipient_name'],
+                    address=row['address'],
+                    phone=row['phone'],
+                    shipment_method=ShippingMethod(
+                        id=row['delivery_method_id'],
+                        name=row['delivery_method_name']
+                    )
+                ),
+                items=[]
+            ) for row in rows]
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
     def get_all_shipping_methods(self):
@@ -22,7 +39,12 @@ class OrderService(BaseService):
             cur.execute("SELECT * FROM shipping_methods ORDER BY id")
             rows = cur.fetchall()
             cur.close()
-            return [ShippingMethod(row[0], row[1], row[2], row[3]) for row in rows]
+            return [ShippingMethod(
+                id=row['id'],
+                name=row['name'],
+                description=row['description'],
+                fee=row['fee']
+            ) for row in rows]
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
 
@@ -48,8 +70,10 @@ class OrderService(BaseService):
             cur.execute("""
             INSERT INTO orders (user_id, cart_id, shipment_id, status, total_amount)
             VALUES (%s, %s, %s, %s, %s)
-            """, (user_id, cart_id, shipment_id, 'pending', total_amount))
+            """, (user_id, cart_id, shipment_id, 'delivered', total_amount))
             order_id = cur.lastrowid
+
+            cur.execute("UPDATE carts SET status = 'abandoned' WHERE id = %s", (cart_id,))
 
             cur.execute("""
             INSERT INTO order_items (order_id, product_id, quantity, price)
@@ -69,8 +93,8 @@ class OrderService(BaseService):
             if user_id:
                 cur.execute("""
                 SELECT 
-                o.id, o.user_id, o.cart_id, o.status, o.total_amount, o.created_at,
-                s.recipient_name, s.address, s.phone, sm.id as delivery_method_id, sm.name as delivery_method_name
+                    o.id, o.user_id, o.cart_id, o.status, o.total_amount, o.created_at,
+                    s.recipient_name, s.address, s.phone, sm.id as delivery_method_id, sm.name as delivery_method_name
                 FROM orders o
                 JOIN shipments s ON o.shipment_id = s.id
                 JOIN shipping_methods sm ON s.shipping_method_id = sm.id
@@ -90,19 +114,19 @@ class OrderService(BaseService):
             orders = []
             for row in cur.fetchall():
                 order = Order(
-                    id=row[0],
-                    user_id=row[1],
-                    cart_id=row[2],
-                    status=row[3],
-                    total_amount=float(row[4]),
-                    created_at=row[5],
+                    id=row['id'],
+                    user_id=row['user_id'],
+                    cart_id=row['cart_id'],
+                    status=row['status'],
+                    total_amount=row['total_amount'],
+                    created_at=row['created_at'],
                     shipment=Shipment(
-                        recipient_name=row[6],
-                        address=row[7],
-                        phone=row[8],
+                        recipient_name=row['recipient_name'],
+                        address=row['address'],
+                        phone=row['phone'],
                         shipment_method=ShippingMethod(
-                            id=row[9],
-                            name=row[10]
+                            id=row['delivery_method_id'],
+                            name=row['delivery_method_name']
                         )
                     ),
                     items=[]
@@ -112,24 +136,24 @@ class OrderService(BaseService):
                 cur.execute("""
                     SELECT 
                         oi.id, oi.order_id, oi.product_id, oi.quantity, oi.price,
-                        p.id, p.name, p.description, p.image
+                        p.id product_id, p.name product_name, p.description product_description, p.image product_image
                     FROM order_items oi
                     JOIN products p ON oi.product_id = p.id
                     WHERE oi.order_id = %s
                 """, (order.id,))
                 
-                for item_row in cur.fetchall():
+                for row in cur.fetchall():
                     item = OrderItem(
-                        id=item_row[0],
-                        order_id=item_row[1],
-                        product_id=item_row[2],
-                        quantity=item_row[3],
-                        price=float(item_row[4]),
+                        id=row['id'],
+                        order_id=row['order_id'],
+                        product_id=row['product_id'],
+                        quantity=row['quantity'],
+                        price=row['price'],
                         product=Product(
-                            id=item_row[5],
-                            name=item_row[6],
-                            description=item_row[7],
-                            image=item_row[8]
+                            id=row['product_id'],
+                            name=row['product_name'],
+                            description=row['product_description'],
+                            image=row['product_image']
                         )
                     )
                     order.items.append(item)
