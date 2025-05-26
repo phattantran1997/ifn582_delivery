@@ -3,14 +3,30 @@ from api.models.shipping_method import ShippingMethod
 from api.models.order import Order
 from api.models.shipment import Shipment
 from api.models.product import Product
-from api.models.shipping_method import ShippingMethod
 from api.models.order_item import OrderItem
 
 class OrderService(BaseService):
     def get_all_orders(self):
         try:
             cur = self.get_cursor()
-            cur.execute("SELECT * FROM orders ORDER BY id")
+            cur.execute("""
+                SELECT 
+                    orders.id,
+                    orders.user_id,
+                    orders.cart_id,
+                    orders.status,
+                    orders.total_amount,
+                    orders.created_at,
+                    shipments.recipient_name,
+                    shipments.address,
+                    shipments.phone,
+                    shipping_methods.id as delivery_method_id,
+                    shipping_methods.name as delivery_method_name
+                FROM orders
+                JOIN shipments ON orders.shipment_id = shipments.id
+                JOIN shipping_methods ON shipments.shipping_method_id = shipping_methods.id
+                ORDER BY orders.id
+            """)
             rows = cur.fetchall()
             cur.close()
             return [Order(
@@ -33,6 +49,7 @@ class OrderService(BaseService):
             ) for row in rows]
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
+
     def get_all_shipping_methods(self):
         try:
             cur = self.get_cursor()
@@ -93,8 +110,18 @@ class OrderService(BaseService):
             if user_id:
                 cur.execute("""
                 SELECT 
-                    o.id, o.user_id, o.cart_id, o.status, o.total_amount, o.created_at,
-                    s.recipient_name, s.address, s.phone, sm.id as delivery_method_id, sm.name as delivery_method_name
+                    o.id,
+                    o.user_id,
+                    o.cart_id,
+                    o.status,
+                    o.total_amount,
+                    o.created_at,
+                    s.recipient_name,
+                    s.address,
+                    s.phone,
+                    sm.id as delivery_method_id,
+                    sm.name as delivery_method_name
+
                 FROM orders o
                 JOIN shipments s ON o.shipment_id = s.id
                 JOIN shipping_methods sm ON s.shipping_method_id = sm.id
@@ -135,8 +162,15 @@ class OrderService(BaseService):
                 # Get items for each order
                 cur.execute("""
                     SELECT 
-                        oi.id, oi.order_id, oi.product_id, oi.quantity, oi.price,
-                        p.id product_id, p.name product_name, p.description product_description, p.image product_image
+                        oi.id,
+                        oi.order_id,
+                        oi.product_id,
+                        oi.quantity,
+                        oi.price,
+                        p.id product_id,
+                        p.name product_name,
+                        p.description product_description,
+                        p.image product_image
                     FROM order_items oi
                     JOIN products p ON oi.product_id = p.id
                     WHERE oi.order_id = %s
