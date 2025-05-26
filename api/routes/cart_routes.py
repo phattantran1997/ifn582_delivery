@@ -28,6 +28,8 @@ def cart_page():
 @user_required 
 def minus_quantity(cart_id, cart_item_id):
     try:
+        if not _is_self_cart(cart_id):
+            return render_template('error.html', error='You are not authorized to update this cart item')
         # check if quantity is larger than 0
         quantity = cart_route.service.get_cart_item_quantity(cart_item_id)
         cart = cart_route.service.get_cart_by_id(cart_id)
@@ -82,17 +84,19 @@ def add_to_cart():
 
             cart_item = cart_route.service.get_cart_item_by_product_id(cart.id, product_id)
             # if cart item exists, just update quantity
+            selected_qty = int(form.quantity.data)
+
             if cart_item is not None:
-                cart_route.service.update_cart_item_quantity(cart_item.id, form.quantity.data)
+                cart_route.service.update_cart_item_quantity(cart_item.id, selected_qty)
             else:
-                cart_route.service.add_to_cart(cart.id, product_id, form.quantity.data)
+                cart_route.service.add_to_cart(cart.id, product_id, selected_qty)
 
             flash('Product added to cart', 'success')
 
         return redirect(url_for('cart.cart_page'))
 
     except Exception as e:
-        flash('Failed to add product to cart', 'error')
+        flash(str(e), 'error')
         return redirect(url_for('product.get_product', id=product_id))
 
 

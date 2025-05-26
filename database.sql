@@ -33,8 +33,11 @@ CREATE TABLE products (
     image VARCHAR(255),
     description VARCHAR(255),
     category_id INT,
+    availability ENUM('in_stock', 'out_of_stock') DEFAULT 'in_stock',
+    quantity INT DEFAULT 0,
     FOREIGN KEY (category_id) REFERENCES categories(id)
 );
+
 
 CREATE TABLE permissions (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -141,26 +144,26 @@ INSERT INTO users (username, email, password, role_id) VALUES
 ('user3', 'user3@example.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 2),
 ('user4', 'user4@example.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 2);
 
-INSERT INTO products (name, price, category_id, image, description) VALUES 
-('Bananas', 3.0, 1, '/images/products/banana.png', 'Fresh yellow bananas, approx.1kg'), 
-('Spinach', 2.5, 1, '/images/products/spinach.png', 'Organic spinach leaves, 250g'), 
-('Apples', 5.99, 1, '/images/products/apple.png', 'Fresh and juicy red apples,1kg.'),
-('Chicken Breast', 8.99, 2, '/images/products/chicken breast.png', 'Skinless chicken breast fillets, 1kg.'), 
-('Salmon', 12.99, 2, '/images/products/salmon.png', 'Premium quality fresh salmon fillet, 500g'), 
-('Whole Milk', 2.8, 3, '/images/products/milk.png', 'Fresh whole milk, approx.1l'), 
-('Cheddar Cheese', 4.5, 3, '/images/products/cheese.png', 'Block of cheddar cheese, 500g'), 
-('Eggs', 4.2, 4, '/images/products/eggs.png', 'Free-range brown eggs, pack of 12.'),
-('Oats', 3.0, 4, '/images/products/oats.png', 'Rolled oats, high in fiber, 500g .'),
-('Potato chips', 2.5, 5, '/images/products/chips.png', 'Salted potato chips, 150g pack'),
-('Milk Chocolate Bar', 2.0, 5, '/images/products/chocolatebar.png', 'Smooth milk chocolate bar, 100g'), 
-('Orange Juice', 3.0, 6, '/images/products/orangejuice.png', '100% orange juice, no added sugar, 1L'), 
-('Instant Coffee', 6.5, 6, '/images/products/coffee.png', 'Instant coffee powder, strong blend, 200g'), 
-('Shampoo', 5.5, 7, '/images/products/shampoo.png', 'Moisturizing shampoo for all hair types'), 
-('Toothpaste', 2.8, 7, '/images/products/toothpaste.png', 'Fluoride toothpaste for fresh breath'), 
-('Dishwashing Liquid', 3.2, 8, '/images/products/dishwash.png', 'Lemon-scented dishwashing liquid, 1L'), 
-('Garbage Bags', 4.0, 8, '/images/products/grabagebag.png', 'Durable large garbage bags'), 
-('Dog Food', 12.0, 9, '/images/products/dogfood.png', 'Dry dog food with chicken flavor, 2kg'), 
-('Cat Litter', 6.0, 9, '/images/products/catlitter.png', 'Clumping cat litter, odor control, 5kg');
+INSERT INTO products (name, price, category_id, image, description, availability, quantity) VALUES 
+('Bananas', 3.0, 1, '/images/products/banana.png', 'Fresh yellow bananas, approx.1kg', 'in_stock', 120), 
+('Spinach', 2.5, 1, '/images/products/spinach.png', 'Organic spinach leaves, 250g', 'in_stock', 90), 
+('Apples', 5.99, 1, '/images/products/apple.png', 'Fresh and juicy red apples,1kg.', 'in_stock', 150),
+('Chicken Breast', 8.99, 2, '/images/products/chicken breast.png', 'Skinless chicken breast fillets, 1kg.', 'in_stock', 80), 
+('Salmon', 12.99, 2, '/images/products/salmon.png', 'Premium quality fresh salmon fillet, 500g', 'in_stock', 60), 
+('Whole Milk', 2.8, 3, '/images/products/milk.png', 'Fresh whole milk, approx.1l', 'in_stock', 110), 
+('Cheddar Cheese', 4.5, 3, '/images/products/cheese.png', 'Block of cheddar cheese, 500g', 'in_stock', 95), 
+('Eggs', 4.2, 4, '/images/products/eggs.png', 'Free-range brown eggs, pack of 12.', 'in_stock', 140),
+('Oats', 3.0, 4, '/images/products/oats.png', 'Rolled oats, high in fiber, 500g .', 'in_stock', 130),
+('Potato chips', 2.5, 5, '/images/products/chips.png', 'Salted potato chips, 150g pack', 'in_stock', 200),
+('Milk Chocolate Bar', 2.0, 5, '/images/products/chocolatebar.png', 'Smooth milk chocolate bar, 100g', 'in_stock', 180), 
+('Orange Juice', 3.0, 6, '/images/products/orangejuice.png', '100% orange juice, no added sugar, 1L', 'in_stock', 160), 
+('Instant Coffee', 6.5, 6, '/images/products/coffee.png', 'Instant coffee powder, strong blend, 200g', 'in_stock', 75), 
+('Shampoo', 5.5, 7, '/images/products/shampoo.png', 'Moisturizing shampoo for all hair types', 'in_stock', 100), 
+('Toothpaste', 2.8, 7, '/images/products/toothpaste.png', 'Fluoride toothpaste for fresh breath', 'in_stock', 130), 
+('Dishwashing Liquid', 3.2, 8, '/images/products/dishwash.png', 'Lemon-scented dishwashing liquid, 1L', 'in_stock', 85), 
+('Garbage Bags', 4.0, 8, '/images/products/grabagebag.png', 'Durable large garbage bags', 'in_stock', 95), 
+('Dog Food', 12.0, 9, '/images/products/dogfood.png', 'Dry dog food with chicken flavor, 2kg', 'in_stock', 70), 
+('Cat Litter', 6.0, 9, '/images/products/catlitter.png', 'Clumping cat litter, odor control, 5kg', 'in_stock', 65);
 
 INSERT INTO shipping_methods (name, description, fee) VALUES 
 ('Free Shipping', 'Free shipping method', 0),

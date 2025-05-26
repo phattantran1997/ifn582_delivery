@@ -137,7 +137,7 @@ class CartService(BaseService):
     def get_cart_item_quantity(self, cart_item_id: int):
         try:
             cur = self.get_cursor()
-            cur.execute("SELECT quantity FROM cart_items WHERE id = %s" (cart_item_id,))
+            cur.execute("SELECT quantity FROM cart_items WHERE id = %s", (cart_item_id,))
             row = cur.fetchone()
             cur.close()
 
@@ -184,15 +184,24 @@ class CartService(BaseService):
     def add_to_cart(self, cart_id: int, product_id: int, quantity: int = 1):
         try:
             cur = self.get_cursor()
-            cur.execute("SELECT price FROM products WHERE id = %s", (product_id,))
-            price = cur.fetchone()
-            if price is None:
+            cur.execute("SELECT price, quantity AS stock FROM products WHERE id = %s", (product_id,))
+            product = cur.fetchone()
+            if product is None:
                 raise Exception("Product not found")
 
-            cur.execute("INSERT INTO cart_items (cart_id, product_id, quantity, price) VALUES (%s, %s, %s, %s)", (cart_id, product_id, quantity, price['price']))
+            if quantity > product['stock']:
+                raise Exception(f"Only {product['stock']} item(s) available in stock.")
+
+            # Insert cart item
+            cur.execute("""
+                INSERT INTO cart_items (cart_id, product_id, quantity, price)
+                VALUES (%s, %s, %s, %s)
+            """, (cart_id, product_id, quantity, product['price']))
+
             self.mysql.connection.commit()
             cur.close()
             return True
+        
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
 

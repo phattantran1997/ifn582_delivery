@@ -23,9 +23,22 @@
             <!-- Product Information -->
             <div class="col-md-6">
                 <h1>{{ product.name }}</h1>
-                <p class="text-muted mb-4">SKU: {{ product.id }} | Category: {{ product.category.name }} | Best Seller</p>
+                <p class="text-muted mb-2">
+                    SKU: {{ product.id }} |
+                    Category: {{ product.category.name }} |
+                    Best Seller
+                </p>
+                <p class="mb-2">
+                    <strong>Availability:</strong>
+                    {% if product.availability and product.availability.strip().lower() == 'in_stock' %}
+                        <span class="text-success">In Stock</span>
+                    {% else %}
+                        <span class="text-danger">Out of Stock</span>
+                    {% endif %}
+                    ({{ product.quantity }} available)
+                </p>
                 <h2 class="text-primary mb-3">${{ "%.2f"|format(product.price) }}</h2>
-                
+
                 <div class="mb-4">
                     <h4>Description</h4>
                     <p>{{ product.description }}</p>
@@ -34,9 +47,9 @@
                 <!-- Add to Cart Section -->
                 <div class="mb-4">
                     <div class="row align-items-center">
-                        {% if 'user_id' in session %}
+                        {% if 'user_id' in session and product.availability == 'in_stock' and product.quantity > 0 %}
                         <form action="{{ url_for('cart.add_to_cart', product_id=product.id) }}" method="POST">
-                            {{form.hidden_tag()}}
+                            {{ form.hidden_tag() }}
                             <div class="col-md-4">
                                 {{ form.quantity.label(class="form-label") }}
                                 {{ form.quantity(class="form-select") }}
@@ -45,6 +58,8 @@
                                 {{ form.submit(class="btn btn-primary p-2 w-50 mt-4") }}
                             </div>
                         </form>
+                        {% else %}
+                        <div class="text-danger mt-4">This product is currently unavailable.</div>
                         {% endif %}
                     </div>
                 </div>
@@ -52,4 +67,4 @@
         </div>
     </div>
 </main>
-{% endblock %} 
+{% endblock %}

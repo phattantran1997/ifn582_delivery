@@ -7,7 +7,7 @@ class ProductService(BaseService):
         try:
             cur = self.get_cursor()
             query = """
-                SELECT p.id, p.name, p.price, p.image, p.description, p.category_id, c.name AS category_name
+                SELECT p.*, c.name AS category_name
                 FROM products p
                 JOIN categories c ON p.category_id = c.id
                 WHERE 1=1
@@ -36,6 +36,8 @@ class ProductService(BaseService):
                     price=float(row['price']),
                     image=row['image'],
                     description=row['description'],
+                    availability=row['availability'],
+                    quantity=row['quantity'],
                     category=Category(id=row['category_id'], name=row['category_name'])
                 )
                 for row in products
@@ -47,7 +49,7 @@ class ProductService(BaseService):
         try:
             cur = self.get_cursor()
             cur.execute("""
-                SELECT p.id, p.name, p.price, p.image, p.description, p.category_id, c.name AS category_name
+                SELECT p.*, c.name AS category_name
                 FROM products p
                 JOIN categories c ON p.category_id = c.id
                 WHERE p.id = %s
@@ -64,6 +66,8 @@ class ProductService(BaseService):
                 price=float(row['price']),
                 image=row['image'],
                 description=row['description'],
+                availability=row['availability'],
+                quantity=row['quantity'],
                 category=Category(id=row['category_id'], name=row['category_name'])
             )
         except Exception as e:
@@ -78,8 +82,16 @@ class ProductService(BaseService):
 
             cur = self.get_cursor()
             cur.execute(
-                "INSERT INTO products (name, price, category_id, image, description) VALUES (%s, %s, %s, %s, %s)",
-                (data['name'], data['price'], data['category_id'], data['image'], data['description'])
+                "INSERT INTO products (name, price, category_id, image, description, availability, quantity) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                (
+                    data['name'],
+                    data['price'],
+                    data['category_id'],
+                    data.get('image', ''),
+                    data.get('description', ''),
+                    data.get('availability', 'in_stock'),
+                    data.get('quantity', 0)
+                )
             )
             self.mysql.connection.commit()
             product_id = cur.lastrowid
@@ -100,7 +112,7 @@ class ProductService(BaseService):
 
             update_fields = []
             values = []
-            for field in ['name', 'price', 'category_id', 'image', 'description']:
+            for field in ['name', 'price', 'category_id', 'image', 'description', 'availability', 'quantity']:
                 if field in data:
                     update_fields.append(f"{field} = %s")
                     values.append(data[field])

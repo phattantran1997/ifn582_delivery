@@ -9,3 +9,5 @@ class Product:
     image: str = ""
     category: Category = None
     description: str = ""
+    availability: str = "in_stock"   
+    quantity: int = 0
