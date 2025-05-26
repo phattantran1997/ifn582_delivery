@@ -112,8 +112,6 @@ CREATE TABLE cart_items (
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
-INSERT INTO categories (name) VALUES ('Food'), ('Grocery'), ('Medical');
-
 INSERT INTO roles (name, description) VALUES 
 ('admin', 'Admin role'),
 ('user', 'User role');
@@ -124,27 +122,79 @@ INSERT INTO permissions (name, description) VALUES
 INSERT INTO role_permissions (role_id, permission_id) VALUES 
 (1, 1);
 
+INSERT INTO categories (name) VALUES 
+('Fruits & Vegetables'), 
+('Meat & Seafood'), 
+('Dairy Products'), 
+('Eggs & Breakfast'), 
+('Snacks & Sweets'), 
+('Beverages'), 
+('Personal Care'), 
+('Household Supplies'), 
+('Pet Supplies');
+
 INSERT INTO users (username, email, password, role_id) VALUES 
-('admin', 'admin@example.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 1),
-('user1', 'user1@example.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 2);
+('admin1', 'admin1@example.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 1),
+('admin2', 'admin2@example.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 1),
+('user1', 'user1@example.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 2),
+('user2', 'user2@example.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 2),
+('user3', 'user3@example.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 2),
+('user4', 'user4@example.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 2);
 
 INSERT INTO products (name, price, category_id, image, description) VALUES 
-('Pizza', 12.99, 1, '/images/products/pizza.png', 'A delicious pizza with fresh ingredients and a crispy crust. Perfect for a quick and easy meal.'), 
-('Bread', 3.99, 2, '/images/products/bread.png', 'A fresh bread with a soft texture and a delicious flavor. Perfect for a quick and easy meal.'), 
-('Aspirin', 5.99, 3, '/images/products/aspirin.png', 'A pain reliever that helps reduce inflammation and swelling. Perfect for a quick and easy meal.');
+('Bananas', 3.0, 1, '/images/products/banana.png', 'Fresh yellow bananas, approx.1kg'), 
+('Spinach', 2.5, 1, '/images/products/spinach.png', 'Organic spinach leaves, 250g'), 
+('Apples', 5.99, 1, '/images/products/apple.png', 'Fresh and juicy red apples,1kg.'),
+('Chicken Breast', 8.99, 2, '/images/products/chicken breast.png', 'Skinless chicken breast fillets, 1kg.'), 
+('Salmon', 12.99, 2, '/images/products/salmon.png', 'Premium quality fresh salmon fillet, 500g'), 
+('Whole Milk', 2.8, 3, '/images/products/milk.png', 'Fresh whole milk, approx.1l'), 
+('Cheddar Cheese', 4.5, 3, '/images/products/cheese.png', 'Block of cheddar cheese, 500g'), 
+('Eggs', 4.2, 4, '/images/products/eggs.png', 'Free-range brown eggs, pack of 12.'),
+('Oats', 3.0, 4, '/images/products/oats.png', 'Rolled oats, high in fiber, 500g .'),
+('Potato chips', 2.5, 5, '/images/products/chips.png', 'Salted potato chips, 150g pack'),
+('Milk Chocolate Bar', 2.0, 5, '/images/products/chocolatebar.png', 'Smooth milk chocolate bar, 100g'), 
+('Orange Juice', 3.0, 6, '/images/products/orangejuice.png', '100% orange juice, no added sugar, 1L'), 
+('Instant Coffee', 6.5, 6, '/images/products/coffee.png', 'Instant coffee powder, strong blend, 200g'), 
+('Shampoo', 5.5, 7, '/images/products/shampoo.png', 'Moisturizing shampoo for all hair types'), 
+('Toothpaste', 2.8, 7, '/images/products/toothpaste.png', 'Fluoride toothpaste for fresh breath'), 
+('Dishwashing Liquid', 3.2, 8, '/images/products/dishwash.png', 'Lemon-scented dishwashing liquid, 1L'), 
+('Garbage Bags', 4.0, 8, '/images/products/grabagebag.png', 'Durable large garbage bags'), 
+('Dog Food', 12.0, 9, '/images/products/dogfood.png', 'Dry dog food with chicken flavor, 2kg'), 
+('Cat Litter', 6.0, 9, '/images/products/catlitter.png', 'Clumping cat litter, odor control, 5kg');
 
 INSERT INTO shipping_methods (name, description, fee) VALUES 
+('Free Shipping', 'Free shipping method', 0),
 ('Standard Shipping', 'Standard shipping method', 5.99),
 ('Express Shipping', 'Express shipping method', 10.99),
-('Free Shipping', 'Free shipping method', 0),
 ('Bike Shipping', 'Bike shipping method', 2.99);
 
 # create carts and cart_items
 INSERT INTO carts (user_id, status) VALUES 
 (1, 'active'),
-(2, 'active');
+(2, 'active'),
+(3, 'active'),
+(4, 'active');
 
 INSERT INTO cart_items (cart_id, product_id, quantity, price) VALUES 
-(1, 1, 2, 12.99),
-(1, 2, 1, 3.99),
-(2, 3, 3, 5.99);
+(1, 1, 2, 3.0),
+(2, 4, 1, 8.99),
+(3, 14, 1, 6.99),
+(4, 17, 1, 4.00);
+
+INSERT INTO shipments (shipping_method_id, recipient_name, address, phone) VALUES
+(1, 'William', '123 Apple St, Brisbane', '0400000001'), 
+(2, 'Harry', '456 Mango Rd, Brisbane', '0400000002'),  
+(3, 'Jake', '789 Peach Ave, Brisbane', '0400000003'), 
+(4, 'Mater', '321 Berry Blvd, Brisbane', '0400000004'); 
+
+INSERT INTO orders (user_id, cart_id, shipment_id, status, total_amount) VALUES
+(1, 1, 1, 'delivered', 2 * 3.00),
+(2, 2, 2, 'delivered', 1 * 8.99),
+(3, 3, 3, 'delivered', 1 * 6.99),
+(4, 4, 4, 'delivered', 1 * 4.00);
+
+INSERT INTO order_items (order_id, product_id, quantity, price) VALUES
+(1, 1, 2, 3.0),
+(2, 4, 1, 8.99),
+(3, 14, 1, 6.99),
+(4, 17, 1, 4.00);
