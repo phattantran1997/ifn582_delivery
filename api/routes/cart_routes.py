@@ -5,9 +5,11 @@ from utils.decorators import user_required
 from api.services.cart_service import CartService
 from api.routes.base_routes import BaseRoute
 from api.forms.cart_form import AddToCartForm
+from api.services.product_service import ProductService
 
 cart_bp = Blueprint('cart', __name__, url_prefix='/cart')
 cart_route = BaseRoute(CartService)
+product_route = BaseRoute(ProductService)
 
 @cart_bp.route('/', methods=['GET'])
 @user_required
@@ -46,9 +48,17 @@ def minus_quantity(cart_id, cart_item_id):
 @cart_bp.route('/<int:cart_id>/cart_items/<int:cart_item_id>/add', methods=['POST'])
 @user_required
 def plus_quantity(cart_id, cart_item_id):
+    product_id = request.args.get('product_id')
     try:
         if not _is_self_cart(cart_id):
             return render_template('error.html', error='You are not authorized to update this cart item')
+
+        quantity = cart_route.service.get_cart_item_quantity(cart_item_id)
+        product = product_route.service.get_product_by_id(product_id)
+        if product.quantity == quantity:
+            flash('Product is not enough', 'error')
+            return redirect(url_for('cart.cart_page'))
+
         cart_route.service.update_cart_item_quantity(cart_item_id, 1)
         return redirect(url_for('cart.cart_page'))
     except Exception as e:

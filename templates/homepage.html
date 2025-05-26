@@ -41,7 +41,11 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="h5 mb-0">${{ "%.2f"|format(product.price) }}</span>
                                 {% if 'user_id' in session %}
-                                    <button class="btn btn-primary">Add to Cart</button>
+                                    {% if product.quantity > 0 %}
+                                        <button class="btn btn-primary">Add to Cart</button>
+                                    {% else %}
+                                        <button class="btn btn-danger" disabled></i>Sold Out</button>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>

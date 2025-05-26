@@ -98,6 +98,13 @@ class OrderService(BaseService):
 
             cur.execute("UPDATE carts SET status = 'abandoned' WHERE id = %s", (cart_id,))
 
+            # update product quantity in products table based on cart items quantity
+            cur.execute("""
+            UPDATE products
+            SET quantity = quantity - (SELECT quantity FROM cart_items WHERE cart_id = %s)
+            WHERE id IN (SELECT product_id FROM cart_items WHERE cart_id = %s)
+            """, (cart_id, cart_id))
+
             cur.execute("""
             INSERT INTO order_items (order_id, product_id, quantity, price)
             SELECT %s, product_id, quantity, price
@@ -113,31 +120,8 @@ class OrderService(BaseService):
     def get_orders_by_user_id(self, user_id=None):
         try:
             cur = self.get_cursor()
-            if user_id:
-                cur.execute("""
-                SELECT 
-                    orders.id,
-                    orders.user_id,
-                    users.username,
-                    orders.cart_id,
-                    orders.status,
-                    orders.total_amount,
-                    orders.created_at,
-                    shipments.recipient_name,
-                    shipments.address,
-                    shipments.phone,
-                    shipping_methods.id as delivery_method_id,
-                    shipping_methods.name as delivery_method_name
-
-                FROM orders
-                JOIN users ON orders.user_id = users.id
-                JOIN shipments ON orders.shipment_id = shipments.id
-                JOIN shipping_methods ON shipments.shipping_method_id = shipping_methods.id
-                WHERE orders.user_id = %s
-                ORDER BY orders.created_at DESC
-            """, (user_id,))
-            else:
-                cur.execute("""
+            # Determine the base query based on whether a user_id is provided
+            base_query = """
                 SELECT 
                     orders.id, 
                     orders.user_id,
@@ -155,27 +139,33 @@ class OrderService(BaseService):
                 JOIN users ON orders.user_id = users.id
                 JOIN shipments ON orders.shipment_id = shipments.id
                 JOIN shipping_methods ON shipments.shipping_method_id = shipping_methods.id
-                ORDER BY orders.created_at DESC
-            """)
+            """
+            if user_id:
+                cur.execute(base_query + " WHERE orders.user_id = %s ORDER BY orders.created_at DESC", (user_id,))
+            else:
+                cur.execute(base_query + " ORDER BY orders.created_at DESC")
+
+            orders_data = cur.fetchall()
             orders = []
-            for row in cur.fetchall():
+
+            for order_row in orders_data:
                 order = Order(
-                    id=row['id'],
+                    id=order_row['id'],
                     user=User(
-                        id=row['user_id'],
-                        username=row['username'],
+                        id=order_row['user_id'],
+                        username=order_row['username'],
                     ),
-                    cart_id=row['cart_id'],
-                    status=row['status'],
-                    total_amount=row['total_amount'],
-                    created_at=row['created_at'],
+                    cart_id=order_row['cart_id'],
+                    status=order_row['status'],
+                    total_amount=order_row['total_amount'],
+                    created_at=order_row['created_at'],
                     shipment=Shipment(
-                        recipient_name=row['recipient_name'],
-                        address=row['address'],
-                        phone=row['phone'],
+                        recipient_name=order_row['recipient_name'],
+                        address=order_row['address'],
+                        phone=order_row['phone'],
                         shipment_method=ShippingMethod(
-                            id=row['delivery_method_id'],
-                            name=row['delivery_method_name']
+                            id=order_row['delivery_method_id'],
+                            name=order_row['delivery_method_name']
                         )
                     ),
                     items=[]
@@ -184,40 +174,37 @@ class OrderService(BaseService):
                 # Get items for each order
                 cur.execute("""
                     SELECT 
-                        order_items.id,
-                        order_items.order_id,
-                        order_items.product_id,
-                        order_items.quantity,
-                        order_items.price,
-                        products.id product_id,
-                        products.name product_name,
-                        products.description product_description,
-                        products.image product_image
-                    FROM order_items
-                    JOIN products ON order_items.product_id = products.id
-                    WHERE order_items.order_id = %s
+                        oi.id, oi.order_id, oi.product_id, oi.quantity, oi.price,
+                        p.name AS product_name, p.description AS product_description, 
+                        p.image AS product_image, p.quantity AS product_current_quantity  
+                    FROM order_items oi
+                    JOIN products p ON oi.product_id = p.id
+                    WHERE oi.order_id = %s
                 """, (order.id,))
                 
-                for row in cur.fetchall():
+                order_items_data = cur.fetchall()
+                for item_row in order_items_data:
                     item = OrderItem(
-                        id=row['id'],
-                        order_id=row['order_id'],
-                        product_id=row['product_id'],
-                        quantity=row['quantity'],
-                        price=row['price'],
+                        id=item_row['id'],
+                        order_id=item_row['order_id'],
+                        product_id=item_row['product_id'],
+                        quantity=item_row['quantity'], 
+                        price=item_row['price'],
                         product=Product(
-                            id=row['product_id'],
-                            name=row['product_name'],
-                            description=row['product_description'],
-                            image=row['product_image']
+                            id=item_row['product_id'],
+                            name=item_row['product_name'],
+                            description=item_row['product_description'],
+                            image=item_row['product_image'],
+                            quantity=item_row['product_current_quantity']  
                         )
                     )
                     order.items.append(item)
                 
                 orders.append(order)
             
-            cur.close()
             return orders
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
-    
+        finally:
+            if cur:
+                cur.close()

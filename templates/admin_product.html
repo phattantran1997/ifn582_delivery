@@ -29,11 +29,12 @@
         <div class="border shadow-sm p-3">
             <!-- Header -->
             <div class="row border-bottom pb-2 mb-3 d-md-flex d-none">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="ms-5">Product Info</div>
                 </div>
-                <div class="col-md-3">Price</div>
-                <div class="col-md-3">
+                <div class="col-md-2">Price</div>
+                <div class="col-md-2">Quantity</div>
+                <div class="col-md-2">
                     <div class="ms-4">Category</div>
                 </div>
             </div>
@@ -41,7 +42,7 @@
             <!-- Product List -->
             {% for product in products %}
             <div class="row py-3 border-bottom align-items-center">
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-4">
                     <div class="d-flex align-items-center gap-3">
                         <div class="d-flex gap-2">
                             <form action="{{ url_for('admin.delete_product', id=product.id) }}" method="POST">
@@ -63,10 +64,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-5">
+                <div class="col-md-2 col-5">
                     ${{ "%.2f"|format(product.price) }}
                 </div>
-                <div class="col-md-3 col-5">
+                <div class="col-md-2 col-5">{{ product.quantity }}</div>
+                <div class="col-md-2 col-5">
                     <div class="badge status-info rounded-1 fw-semibold">{{ product.category.name }}</div>
                 </div>
             </div>
