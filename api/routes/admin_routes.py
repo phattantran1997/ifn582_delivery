@@ -32,9 +32,7 @@ def add_new_product():
     # handle image upload
     if 'image' in request.files and request.files['image'].filename != '':
         file = request.files['image']
-        # Ensure the directory exists
         upload_folder = os.path.join(os.path.curdir, 'static/images/products')
-        os.makedirs(upload_folder, exist_ok=True)
         file.save(os.path.join(upload_folder, file.filename))
         image_filename = os.path.join('images/products', file.filename)
 
