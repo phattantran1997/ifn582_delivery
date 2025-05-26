@@ -28,12 +28,9 @@ def cart_page():
 @user_required 
 def minus_quantity(cart_id, cart_item_id):
     try:
-        print(cart_id, cart_item_id)
         # check if quantity is larger than 0
         quantity = cart_route.service.get_cart_item_quantity(cart_item_id)
-        print(quantity)
         cart = cart_route.service.get_cart_by_id(cart_id)
-        print(quantity, cart)
 
         if quantity <= 1:
             subtotal, tax, total = _calculate_total(cart.id)
@@ -79,7 +76,6 @@ def add_to_cart():
 
         if form.validate_on_submit():
             cart = cart_route.service.get_cart_by_user_id(user_id)
-            print(cart)
             if cart is None:
                 cart = cart_route.service.create_cart(user_id)
 
