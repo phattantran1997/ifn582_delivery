@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+{% block content %}
+<div class="container content">
+    <ul class="nav nav-tabs mt-4">
+        <li class="nav-item">
+            <a class="nav-link {% if section == 'products' %}active{% endif %}" href="{{ url_for('admin.home') }}">Products</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if section == 'categories' %}active{% endif %}" href="{{ url_for('admin.categories') }}">Categories</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if section == 'orders' %}active{% endif %}" href="{{ url_for('admin.orders') }}">Orders</a>
+        </li>
+    </ul>
+
+    <div class="container py-4 m-auto">
+        <div class="d-flex justify-content-between align-items-center mb-3 p-1">
+            <div>
+                <h4 class="mb-1">Orders</h4>
+                <div class="text-muted">Showing {{ orders|length }} orders</div>
+            </div>
+        </div>
+        
+        <div class="border shadow-sm p-3">
+            <!-- Header -->
+            <div class="row border-bottom pb-2 mb-3 d-md-flex d-none">
+                <div class="col-md-3">Order ID</div>
+                <div class="col-md-3">Buyer</div>
+                <div class="col-md-3">Date Placed</div>
+                <div class="col-md-3">Total Amount</div>
+            </div>
+
+            <!-- Product List -->
+            {% for order in orders %}
+            <div class="row py-3 border-bottom align-items-center">
+                <div class="col-md-3 col-6 p-1">
+                    <div class="d-flex align-items-center gap-3">
+                        <div>
+                            <div class="fw-semibold text-truncate" style="max-width: 200px;">{{ order.user.name }}</div>
+                            <div class="text-muted small">ID: {{ order.id }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 p-1">
+                    <div class="badge status-info rounded-1 fw-semibold">{{ order.user.username }}</div>
+                </div>
+                <div class="col-md-3 col-6 p-1">
+                    {{ order.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+                </div>
+                <div class="col-md-3 col-6 p-1">
+                    ${{ "%.2f"|format(order.total_amount) }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

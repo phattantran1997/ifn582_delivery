@@ -13,7 +13,7 @@ order_route = BaseRoute(OrderService)
 @admin_required
 def home():
     products = admin_route.service.get_all_products()
-    return render_template('admin.html', products=products, section='products')
+    return render_template('admin_product.html', products=products, section='products')
 
 @admin_bp.route('/products/add', methods=['GET'])
 @admin_required
@@ -23,7 +23,7 @@ def add_product_page():
         product = admin_route.service.get_product_by_id(request.args.get('id'))
     else:
         product = None
-    return render_template('admin_product.html', categories=categories, product=product)
+    return render_template('admin_add_product.html', categories=categories, product=product)
 
 @admin_bp.route('/products/add', methods=['POST'])
 def add_new_product():
@@ -74,7 +74,7 @@ def add_category_page():
         category = admin_route.service.get_category_by_id(request.args.get('id'))
     else:
         category = None
-    return render_template('admin_category.html', categories=categories, category=category)
+    return render_template('admin_add_category.html', categories=categories, category=category)
 
 @admin_bp.route('/category/add', methods=['POST'])
 def add_new_category():
@@ -99,11 +99,11 @@ def update_category(id):
 @admin_required
 def categories():
     categories = admin_route.service.get_categories()
-    return render_template('category.html', categories=categories, section='categories')
+    return render_template('admin_category.html', categories=categories, section='categories')
 
 @admin_bp.route('/orders', methods=['GET'])
 @admin_required
 def orders():
-    orders = order_route.service.get_orders_by_user_id()
-    return render_template('admin.html', orders=orders, section='orders')
+    orders = order_route.service.get_all_orders()
+    return render_template('admin_order.html', orders=orders, section='orders')
     
