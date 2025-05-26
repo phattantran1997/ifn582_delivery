@@ -28,9 +28,12 @@ def cart_page():
 @user_required 
 def minus_quantity(cart_id, cart_item_id):
     try:
+        print(cart_id, cart_item_id)
         # check if quantity is larger than 0
         quantity = cart_route.service.get_cart_item_quantity(cart_item_id)
+        print(quantity)
         cart = cart_route.service.get_cart_by_id(cart_id)
+        print(quantity, cart)
 
         if quantity <= 1:
             subtotal, tax, total = _calculate_total(cart.id)
