@@ -93,11 +93,16 @@
                 <ul class="list-unstyled">
                     <li><a href="{{ url_for('main.home') }}">Home</a></li>
                     <li><a href="{{ url_for('order.history') }}">Order History</a></li>
+                    <li><a href="{{ url_for('cart.cart_page') }}">Cart</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                    {% if 'user_id' in session and session['role'] == 'admin' %}
+                        <li><a href="{{ url_for('admin.home') }}">Admin Dashboard</a></li>
+                    {% endif %}
                 </ul>
             </div>
             <div class="col-md-4">
                 <h5 class="footer-heading">Stay Connected</h5>
-                <p>Subscribe to our newsletter for updates and promotions.</p>
+                <p>We provide fast and reliable grocery delivery to your home and office.</p>
                 <form class="mb-3">
                     <div class="input-group">
                         <input type="email" class="form-control" placeholder="Your email">
@@ -114,7 +119,7 @@
         </div>
         <div class="row mt-1">
             <div class="col-12 text-center">
-                <p class="copyright">IFN582 - Furniture store - QUT</p>
+                <p class="copyright">IFN582 - Grocery store - QUT</p>
             </div>
         </div>
     </div>
