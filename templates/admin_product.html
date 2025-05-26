@@ -1,75 +1,77 @@
 {% extends "base.html" %}
-{% block title %}Add Product{% endblock %}
+{% block title %}Admin{% endblock %}
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 {% endblock %}
-
 {% block content %}
-<div class="container w-100 p-4">
-    <div class="py-4 w-100">
+<div class="container content">
+    <ul class="nav nav-tabs mt-4">
+        <li class="nav-item">
+            <a class="nav-link {% if section == 'products' %}active{% endif %}" href="{{ url_for('admin.home') }}">Products</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if section == 'categories' %}active{% endif %}" href="{{ url_for('admin.categories') }}">Categories</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if section == 'orders' %}active{% endif %}" href="{{ url_for('admin.orders') }}">Orders</a>
+        </li>
+    </ul>
+
+    <div class="container py-4 m-auto">
         <div class="d-flex justify-content-between align-items-center mb-3 p-1">
             <div>
-                {% if product %}
-                    <h4 class="mb-1">Edit Product</h4>
-                {% else %}
-                    <h4 class="mb-1">Add Product</h4>
-                {% endif %}
+                <h4 class="mb-1">Products</h4>
+                <div class="text-muted">Showing {{ products|length }} products</div>
             </div>
+            <a href="{{ url_for('admin.add_product_page') }}" class="btn btn-primary rounded-1">+ Add Product</a>
         </div>
-        {% if product %}
-            <form action="{{ url_for('admin.update_product', id=product.id) }}" method="POST" enctype="multipart/form-data" class="border shadow-sm w-100 p-4">
-        {% else %}
-            <form action="{{ url_for('admin.add_new_product') }}" method="POST" enctype="multipart/form-data" class="border shadow-sm w-100 p-4">
-        {% endif %}
-            <div class="row g-4">
+        
+        <div class="border shadow-sm p-3">
+            <!-- Header -->
+            <div class="row border-bottom pb-2 mb-3 d-md-flex d-none">
                 <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Product Name</label>
-                        <input type="text" class="form-control" id="name" name="name" value="{{ product.name if product else '' }}" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="category" class="form-label">Category</label>
-                        <select class="form-select" id="category" name="category_id" required>
-                            {% for category in categories %}
-                                <option value="{{ category.id }}" {% if product and product.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="price" class="form-label">Price ($)</label>
-                        <input type="number" class="form-control" id="price" name="price" value="{{ product.price if product else '' }}" step="0.01" min="0" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="4">{{ product.description if product else '' }}</textarea>
-                    </div>
+                    <div class="ms-5">Product Info</div>
                 </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="image" class="form-label">Product Image</label>
-                        <input type="file" class="form-control" id="image" name="image" accept="image/*" >
-                        <img id="preview" class="mt-2 d-flex w-100" src="{{url_for('static', filename=product.image if product else 'images/placeholder.png')}}">
-                    </div>
+                <div class="col-md-3">Price</div>
+                <div class="col-md-3">
+                    <div class="ms-4">Category</div>
                 </div>
             </div>
-            <div class="d-flex justify-content-end gap-2 mt-4">
-                <button type="submit" class="btn btn-primary">{% if product %}Update{% else %}Add{% endif %} Product</button>
+
+            <!-- Product List -->
+            {% for product in products %}
+            <div class="row py-3 border-bottom align-items-center">
+                <div class="col-12 col-md-6">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex gap-2">
+                            <form action="{{ url_for('admin.delete_product', id=product.id) }}" method="POST">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                            <a href="{{ url_for('admin.add_product_page', id=product.id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                        </div>
+                        <img src="{{ url_for('static', filename=product.image if product.image else 'images/logo.png') }}" 
+                             alt="Product Image" 
+                             class="thumbnail"
+                             style="max-width: 100px; height: auto;">
+                        <div>
+                            <div class="fw-semibold text-truncate" style="max-width: 200px;">{{ product.name }}</div>
+                            <div class="text-muted small">ID: {{ product.id }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-5">
+                    ${{ "%.2f"|format(product.price) }}
+                </div>
+                <div class="col-md-3 col-5">
+                    <div class="badge status-info rounded-1 fw-semibold">{{ product.category.name }}</div>
+                </div>
             </div>
-        </form>
+            {% endfor %}
+        </div>
     </div>
 </div>
-<script>
-    document.getElementById('image').addEventListener('change', function() {
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = document.getElementById('preview');
-                preview.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-</script>
 {% endblock %}

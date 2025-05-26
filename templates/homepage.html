@@ -16,7 +16,7 @@
         <div class="row mb-4">
             <div class="col-12">
                 <h3>Categories</h3>
-                <div class="btn-group" role="group">
+                <div class="d-flex flex-wrap gap-2">
                     <a href="{{ url_for('main.home') }}" class="btn btn-outline-primary {% if not request.args.get('category') %}active{% endif %}">All</a>
                     {% for category in categories %}
                     <a href="{{ url_for('main.home', category=category.name) }}" 

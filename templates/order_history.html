@@ -12,7 +12,7 @@
     }
 
     .history-body {
-        max-width: 1000px;
+        max-width: 1200px;
         width: 100%;
     }
     
@@ -31,17 +31,29 @@
             <div class="row">
                 <div class="col">
                     <div class="row text-center">
-                        <div class="col-sm-3 col-12 p-2">
-                            <h5 class="text-muted">Order Number</h5>
+                        <div class="col-sm-4 col-6 p-2">
+                            <h6 class="text-muted">Order Number</h6>
                             <strong>{{ order.id }}</strong>
                         </div>
-                        <div class="col-sm-5 col-12 p-2">
-                            <h5 class="text-muted">Date Placed</h5>
+                        <div class="col-sm-4 col-6 p-2">
+                            <h6 class="text-muted">Date Placed</h6>
                             <strong>{{ order.created_at.strftime('%b %d, %Y') }}</strong>
                         </div>
-                        <div class="col-sm-4 col-12 p-2">
-                            <h5 class="text-muted">Total Amount</h5>
+                        <div class="col-sm-4 col-6 p-2">
+                            <h6 class="text-muted">Total Amount</h6>
                             <strong>${{ "%.2f"|format(order.total_amount) }}</strong>
+                        </div>
+                        <div class="col-sm-4 col-6 p-2">
+                            <h6 class="text-muted">Address</h6>
+                            <strong>{{ order.shipment.address }}</strong>
+                        </div>
+                        <div class="col-sm-4 col-6 p-2">
+                            <h6 class="text-muted">Shipping Method</h6>
+                            <strong>{{ order.shipment.shipment_method.name }}</strong>
+                        </div>
+                        <div class="col-sm-4 col-6 p-2">
+                            <h6 class="text-muted">Phone</h6>
+                            <strong>{{ order.shipment.phone }}</strong>
                         </div>
                     </div>
                 </div>
