@@ -42,7 +42,7 @@ def place_order(cart_id):
         selected_delivery_method_id = request.args['selected_delivery_method_id']
         selected_delivery_method = checkout_service.service.get_all_shipping_methods()[int(selected_delivery_method_id) - 1]
         _, _, total_amount = _calculate_total(cart_id, selected_delivery_method)
-        order_id = checkout_service.service.create_order(
+        checkout_service.service.create_order(
             recipient_name=request.form['first_name'] + ' ' + request.form['last_name'],
             phone=request.form['phone'],
             address=','.join([request.form['address'],request.form['city'],request.form['state'],request.form['zip_code']]),

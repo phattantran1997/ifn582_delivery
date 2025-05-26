@@ -20,15 +20,24 @@ class CartService(BaseService):
             cur = self.get_cursor()
             cur.execute("""
             SELECT 
-                c.id, c.user_id, c.status, 
-                ci.id cart_item_id, ci.quantity, ci.price, 
-                p.id product_id, p.name product_name, p.description product_description, p.image product_image,
-                ca.id category_id, ca.name category_name
-            FROM carts c
-            LEFT JOIN cart_items ci ON c.id = ci.cart_id
-            LEFT JOIN products p ON ci.product_id = p.id
-            LEFT JOIN categories ca ON p.category_id = ca.id
-            WHERE c.user_id = %s AND c.status = 'active'
+                carts.id,
+                carts.user_id,
+                carts.status,
+                cart_items.id cart_item_id,
+                cart_items.quantity,
+                cart_items.price,
+                products.id product_id,
+                products.name product_name,
+                products.description product_description,
+                products.image product_image,
+                products.quantity AS product_quantity,
+                categories.id category_id,
+                categories.name category_name
+            FROM carts
+            LEFT JOIN cart_items ON carts.id = cart_items.cart_id
+            LEFT JOIN products ON cart_items.product_id = products.id
+            LEFT JOIN categories ON products.category_id = categories.id
+            WHERE carts.user_id = %s AND carts.status = 'active'
             """, (user_id,))
             rows = cur.fetchall()
             cur.close()
@@ -55,6 +64,7 @@ class CartService(BaseService):
                         name=row['product_name'],
                         description=row['product_description'],
                         image=row['product_image'],
+                        quantity=row['product_quantity'],
                         category=Category(
                             id=row['category_id'],
                             name=row['category_name']
@@ -72,15 +82,24 @@ class CartService(BaseService):
             cur = self.get_cursor()
             cur.execute("""
             SELECT 
-                c.id, c.user_id, c.status,
-                ci.id cart_item_id, ci.quantity, ci.price, 
-                p.id product_id, p.name product_name, p.description product_description,
-                p.image product_image, ca.id category_id, ca.name category_name
-            FROM carts c
-            LEFT JOIN cart_items ci ON c.id = ci.cart_id
-            LEFT JOIN products p ON ci.product_id = p.id
-            LEFT JOIN categories ca ON p.category_id = ca.id
-            WHERE c.id = %s
+                carts.id,
+                carts.user_id,
+                carts.status,
+                cart_items.id cart_item_id,
+                cart_items.quantity,
+                cart_items.price,
+                products.id product_id,
+                products.name product_name,
+                products.description product_description,
+                products.image product_image,
+                products.quantity AS product_quantity,
+                categories.id category_id,
+                categories.name category_name
+            FROM carts
+            LEFT JOIN cart_items ON carts.id = cart_items.cart_id
+            LEFT JOIN products ON cart_items.product_id = products.id
+            LEFT JOIN categories ON products.category_id = categories.id
+            WHERE carts.id = %s
             """, (cart_id,))
             rows = cur.fetchall()
             cur.close()
@@ -104,6 +123,7 @@ class CartService(BaseService):
                         name=row['product_name'],
                         description=row['product_description'],
                         image=row['product_image'],
+                        quantity=row['product_quantity'],
                         category=Category(
                             id=row['category_id'],
                             name=row['category_name']
@@ -120,9 +140,9 @@ class CartService(BaseService):
         try:
             cur = self.get_cursor()
             cur.execute("""
-            SELECT SUM(ci.quantity * ci.price) AS subtotal
-            FROM cart_items ci
-            WHERE ci.cart_id = %s
+            SELECT SUM(cart_items.quantity * cart_items.price) AS subtotal
+            FROM cart_items
+            WHERE cart_items.cart_id = %s
             """, (cart_id,))
             row = cur.fetchone()
             cur.close()
@@ -156,6 +176,7 @@ class CartService(BaseService):
                 SET quantity = quantity + %s
                 WHERE id = %s
             """, (quantity, cart_item_id))
+            
             self.mysql.connection.commit()
             cur.close()
             return True
@@ -217,4 +238,3 @@ class CartService(BaseService):
             return True
         except Exception as e:
             raise Exception(f"Database error: {str(e)}")
-        

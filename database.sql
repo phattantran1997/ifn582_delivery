@@ -201,3 +201,31 @@ INSERT INTO order_items (order_id, product_id, quantity, price) VALUES
 (2, 4, 1, 8.99),
 (3, 14, 1, 6.99),
 (4, 17, 1, 4.00);
+
+-- Update trigger
+DELIMITER //
+CREATE TRIGGER trg_products_bu
+BEFORE UPDATE ON products
+FOR EACH ROW
+BEGIN
+  IF NEW.quantity > 0 THEN
+    SET NEW.availability = 'in_stock';
+  ELSE
+    SET NEW.availability = 'out_of_stock';
+  END IF;
+END;//
+DELIMITER ;
+
+-- Insert trigger
+DELIMITER //
+CREATE TRIGGER trg_products_bi
+BEFORE INSERT ON products
+FOR EACH ROW
+BEGIN
+  IF NEW.quantity > 0 THEN
+    SET NEW.availability = 'in_stock';
+  ELSE
+    SET NEW.availability = 'out_of_stock';
+  END IF;
+END;//
+DELIMITER ;

@@ -32,11 +32,11 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="input-group">
-                                        <form action="{{ url_for('cart.minus_quantity', cart_id=cart.id, cart_item_id=item.id) }}" method="POST">
+                                        <form action="{{ url_for('cart.minus_quantity', product_id=item.product.id, cart_id=cart.id, cart_item_id=item.id) }}" method="POST">
                                             <button class="btn btn-outline-secondary btn-hover-focus" type="submit"><i class="fa fa-minus"></i></button>
                                         </form>
                                         <input type="text" class="form-control text-center" value="{{ item.quantity }}" min="1" id="quantity-{{ item.id }}">
-                                        <form action="{{ url_for('cart.plus_quantity', cart_id=cart.id, cart_item_id=item.id) }}" method="POST">
+                                        <form action="{{ url_for('cart.plus_quantity', product_id=item.product.id, cart_id=cart.id, cart_item_id=item.id) }}" method="POST">
                                             <button class="btn btn-outline-secondary btn-hover-focus" type="submit"><i class="fa fa-plus"></i></button>
                                         </form>
                                     </div>

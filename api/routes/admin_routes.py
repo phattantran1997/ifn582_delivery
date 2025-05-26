@@ -28,18 +28,27 @@ def add_product_page():
 @admin_bp.route('/products/add', methods=['POST'])
 def add_new_product():
     data = request.form
+    image_filename = None  # Initialize image_filename
     # handle image upload
     if 'image' in request.files and request.files['image'].filename != '':
         file = request.files['image']
-        file.save(os.path.join(os.path.curdir, 'static/images/products', file.filename))
+        # Ensure the directory exists
+        upload_folder = os.path.join(os.path.curdir, 'static/images/products')
+        os.makedirs(upload_folder, exist_ok=True)
+        file.save(os.path.join(upload_folder, file.filename))
+        image_filename = os.path.join('images/products', file.filename)
 
-    admin_route.service.create_product({
+    product_data = {
         'name': data['name'],
         'price': data['price'],
         'category_id': data['category_id'],
-        'image': os.path.join('images/products', file.filename),
-        'description': data['description']
-    })
+        'description': data['description'],
+        'quantity': int(data.get('quantity', 0))  # Add quantity, default to 0 if not in form
+    }
+    if image_filename:
+        product_data['image'] = image_filename
+
+    admin_route.service.create_product(product_data)
     return redirect(url_for('admin.home'))
 
 @admin_bp.route('/products/<int:id>/delete', methods=['POST'])
@@ -54,6 +63,7 @@ def update_product(id):
         'name': data['name'],
         'price': data['price'],
         'category_id': data['category_id'],
+        'quantity': data['quantity'],
         'description': data['description']
     }
 
@@ -106,4 +116,3 @@ def categories():
 def orders():
     orders = order_route.service.get_all_orders()
     return render_template('admin_order.html', orders=orders, section='orders')
-    
