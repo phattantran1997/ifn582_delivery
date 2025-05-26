@@ -16,6 +16,7 @@
         <h2 class="mb-4">Checkout</h2>
         
         <form id="checkout-form" action="{{ url_for('checkout.place_order', cart_id=cart.id, selected_delivery_method_id=selected_delivery_method.id) }}" method="POST">
+            {{form.hidden_tag()}} 
             <div class="row">
                 <div class="col-md-8">
                     <!-- Shipping Information -->

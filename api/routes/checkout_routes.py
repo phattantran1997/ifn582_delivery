@@ -37,15 +37,21 @@ def index(cart_id):
 @checkout_bp.route('/carts/<int:cart_id>/checkout/place_order', methods=['POST'])
 @user_required
 def place_order(cart_id):
+    form = CheckoutForm(request.form)
+    if not form.validate_on_submit():
+        form_errors = form.errors
+        flash(', '.join(form_errors.values()), 'error')
+        return redirect(url_for('checkout.index', cart_id=cart_id))
+
     try:
         user_id = session['user_id']
         selected_delivery_method_id = request.args['selected_delivery_method_id']
         selected_delivery_method = checkout_service.service.get_all_shipping_methods()[int(selected_delivery_method_id) - 1]
         _, _, total_amount = _calculate_total(cart_id, selected_delivery_method)
-        order_id = checkout_service.service.create_order(
-            recipient_name=request.form['first_name'] + ' ' + request.form['last_name'],
-            phone=request.form['phone'],
-            address=','.join([request.form['address'],request.form['city'],request.form['state'],request.form['zip_code']]),
+        checkout_service.service.create_order(
+            recipient_name=' '.join([form.first_name.data, form.last_name.data]),
+            phone=form.phone.data,
+            address=', '.join([form.address.data,form.city.data,form.state.data,str(form.zip_code.data)]),
             delivery_method_id=selected_delivery_method_id,
             user_id=user_id,
             cart_id=cart_id,
