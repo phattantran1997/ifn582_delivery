@@ -1,0 +1,22 @@
+.header {
+  min-height: 1000px;
+  background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url("../img/background.jpeg") center center no-repeat;
+  background-size: cover;
+}
+
+.header .slide {
+  width: 70%;
+  margin: 0 auto;
+}
+
+.price-tag {
+  font-size: 1.8rem;
+  color: #d63384;
+  font-weight: 700;
+}
+
+@media (max-width: 992px) {
+  .navbar {
+    background: var(--bs-dark);
+  }
+}

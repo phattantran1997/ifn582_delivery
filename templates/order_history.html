@@ -15,80 +15,81 @@
         max-width: 1200px;
         width: 100%;
     }
-    
 </style>
 {% endblock %}
 
 {% block content %}
 <main class="container history-body mt-4">
     <h2 class="mb-2">Order History</h1>
-    <p class="text-muted mb-4">Check the status of recent orders, manage returns, and discover similar products</p>
-    <!-- Orders List -->
-    {% for order in orders %}
-    <div class="container border mb-1">
-        <!-- Order Header -->
-        <div class="border-bottom p-3 mb-2">
-            <div class="row">
-                <div class="col">
-                    <div class="row text-center">
-                        <div class="col-sm-4 col-6 p-2">
-                            <h6 class="text-muted">Order Number</h6>
-                            <strong>{{ order.id }}</strong>
-                        </div>
-                        <div class="col-sm-4 col-6 p-2">
-                            <h6 class="text-muted">Date Placed</h6>
-                            <strong>{{ order.created_at.strftime('%b %d, %Y') }}</strong>
-                        </div>
-                        <div class="col-sm-4 col-6 p-2">
-                            <h6 class="text-muted">Total Amount</h6>
-                            <strong>${{ "%.2f"|format(order.total_amount) }}</strong>
-                        </div>
-                        <div class="col-sm-4 col-6 p-2">
-                            <h6 class="text-muted">Address</h6>
-                            <strong>{{ order.shipment.address }}</strong>
-                        </div>
-                        <div class="col-sm-4 col-6 p-2">
-                            <h6 class="text-muted">Shipping Method</h6>
-                            <strong>{{ order.shipment.shipment_method.name }}</strong>
-                        </div>
-                        <div class="col-sm-4 col-6 p-2">
-                            <h6 class="text-muted">Phone</h6>
-                            <strong>{{ order.shipment.phone }}</strong>
+        <p class="text-muted mb-4">Check the status of recent orders, manage returns, and discover similar products</p>
+        <!-- Orders List -->
+        {% for order in orders %}
+        <div class="container border mb-1">
+            <!-- Order Header -->
+            <div class="border-bottom p-3 mb-2">
+                <div class="row">
+                    <div class="col">
+                        <div class="row text-center">
+                            <div class="col-sm-4 col-6 p-2">
+                                <h6 class="text-muted">Order Number</h6>
+                                <strong>{{ order.id }}</strong>
+                            </div>
+                            <div class="col-sm-4 col-6 p-2">
+                                <h6 class="text-muted">Date Placed</h6>
+                                <strong>{{ order.created_at.strftime('%b %d, %Y') }}</strong>
+                            </div>
+                            <div class="col-sm-4 col-6 p-2">
+                                <h6 class="text-muted">Total Amount</h6>
+                                <strong>${{ "%.2f"|format(order.total_amount) }}</strong>
+                            </div>
+                            <div class="col-sm-4 col-6 p-2">
+                                <h6 class="text-muted">Address</h6>
+                                <strong>{{ order.shipment.address }}</strong>
+                            </div>
+                            <div class="col-sm-4 col-6 p-2">
+                                <h6 class="text-muted">Shipping Method</h6>
+                                <strong>{{ order.shipment.shipment_method.name }}</strong>
+                            </div>
+                            <div class="col-sm-4 col-6 p-2">
+                                <h6 class="text-muted">Phone</h6>
+                                <strong>{{ order.shipment.phone }}</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Order Content -->
-        <div class="container p-2">
-            {% for item in order.items %}
-            <div class="row mb-4 align-items-center">
-                <div class="col-md-2 col-4">
-                    <img src="{{ url_for('static', filename=item.product.image) }}" class="product-image" alt="{{ item.product.name }}">
+            <!-- Order Content -->
+            <div class="container p-2">
+                {% for item in order.items %}
+                <div class="row mb-4 align-items-center">
+                    <div class="col-md-2 col-4">
+                        <img src="{{ url_for('static', filename=item.product.image) }}" class="product-image"
+                            alt="{{ item.product.name }}">
+                    </div>
+                    <div class="col-md-6 col-8 p-3">
+                        <h5 class="mb-1">{{ item.product.name }}</h5>
+                        <p class="mb-1 text-muted">{{ item.product.description }}</p>
+                        <p class="mb-0">Qty: {{ item.quantity }}</p>
+                    </div>
+                    <div class="col-md-4 col-12 text-center p-3">
+                        <h5 class="mb-3">${{ "%.2f"|format(item.price * item.quantity) }}</h5>
+                        <span class="text-success"><i class="bi bi-check-circle-fill"></i> Delivered On {{
+                            order.created_at.strftime('%B %d, %Y') }}</span>
+                    </div>
                 </div>
-                <div class="col-md-6 col-8 p-3">
-                    <h5 class="mb-1">{{ item.product.name }}</h5>
-                    <p class="mb-1 text-muted">{{ item.product.description }}</p>
-                    <p class="mb-0">Qty: {{ item.quantity }}</p>
-                </div>
-                <div class="col-md-4 col-12 text-center p-3">
-                    <h5 class="mb-3">${{ "%.2f"|format(item.price * item.quantity) }}</h5>
-                    <span class="text-success"><i class="bi bi-check-circle-fill"></i> Delivered On {{ order.created_at.strftime('%B %d, %Y') }}</span>
-                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-    </div>
-    {% endfor %}
+        {% endfor %}
 
-    {% if not orders %}
-    <div class="text-center border py-5">
-        <h1 class="bi bi-card-list mb-3 text-muted"></h1>
-        <h3>No orders found</h3>
-        <p class="text-muted">You have not made any orders yet. Go Shopping!</p>
-        <a href="{{ url_for('main.home') }}" class="btn btn-primary">Continue Shopping</a>
-    </div>
-    {% endif %}
+        {% if not orders %}
+        <div class="text-center border py-5">
+            <h1 class="bi bi-card-list mb-3 text-muted"></h1>
+            <h3>No orders found</h3>
+            <p class="text-muted">You have not made any orders yet. Go Shopping!</p>
+            <a href="{{ url_for('main.home') }}" class="btn btn-primary">Continue Shopping</a>
+        </div>
+        {% endif %}
 </main>
 {% endblock %}

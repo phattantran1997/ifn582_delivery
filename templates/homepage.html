@@ -4,10 +4,15 @@
 <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
 {% endblock %}
 {% block searchbox %}
-    <form class="d-flex" action="{{ url_for('main.home') }}" method="GET">
-        <input class="search-box form-control" type="search" name="search" placeholder="Search items..." value="{{ request.args.get('search', '') }}">
-        <button class="btn search-btn bg-white" type="submit">Search</button>
-    </form>
+<div class="position-relative mx-auto  nav-item">
+    <span class="input-group">
+        <form class="input-group d-none d-lg-flex me-5" action="{{ url_for('main.home') }}" method="GET">
+            <input class="search-box form-control" type="search" name="search" placeholder="Search items ..."
+                value="{{ request.args.get('search', '') }}">
+            <button class="btn search-btn bg-white" type="submit">Search</button>
+        </form>
+    </span>
+</div>
 {% endblock %}
 {% block content %}
 <main>
@@ -17,10 +22,11 @@
             <div class="col-12">
                 <h3>Categories</h3>
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="{{ url_for('main.home') }}" class="btn btn-outline-primary {% if not request.args.get('category') %}active{% endif %}">All</a>
+                    <a href="{{ url_for('main.home') }}"
+                        class="btn btn-outline-primary {% if not request.args.get('category') %}active{% endif %}">All</a>
                     {% for category in categories %}
-                    <a href="{{ url_for('main.home', category=category.name) }}" 
-                       class="btn btn-outline-primary {% if request.args.get('category') == category.name %}active{% endif %}">
+                    <a href="{{ url_for('main.home', category=category.name) }}"
+                        class="btn btn-outline-primary {% if request.args.get('category') == category.name %}active{% endif %}">
                         {{ category.name }}
                     </a>
                     {% endfor %}
@@ -34,18 +40,19 @@
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
                     <a href="{{ url_for('product.get_product', id=product.id) }}" class="text-decoration-none">
-                        <img src="{{ url_for('static', filename=product.image.lstrip('/')) }}" class="card-img-top" alt="{{ product.name }}">
+                        <img src="{{ url_for('static', filename=product.image.lstrip('/')) }}" class="card-img-top"
+                            alt="{{ product.name }}">
                         <div class="card-body">
                             <h5 class="card-title text-dark">{{ product.name }}</h5>
                             <p class="card-text text-muted">{{ product.description or '' }}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="h5 mb-0">${{ "%.2f"|format(product.price) }}</span>
                                 {% if 'user_id' in session %}
-                                    {% if product.quantity > 0 %}
-                                        <button class="btn btn-primary">Add to Cart</button>
-                                    {% else %}
-                                        <button class="btn btn-danger" disabled></i>Sold Out</button>
-                                    {% endif %}
+                                {% if product.quantity > 0 %}
+                                <button class="btn btn-primary">Add to Cart</button>
+                                {% else %}
+                                <button class="btn btn-danger" disabled></i>Sold Out</button>
+                                {% endif %}
                                 {% endif %}
                             </div>
                         </div>
@@ -56,4 +63,4 @@
         </div>
     </div>
 </main>
-{% endblock %} 
+{% endblock %}
