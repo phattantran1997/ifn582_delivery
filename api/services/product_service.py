@@ -112,6 +112,11 @@ class ProductService(BaseService):
 
             update_fields = []
             values = []
+
+            # If quantity is being updated, force availability accordingly
+            if 'quantity' in data:
+                if int(data['quantity']) > 0:
+                    data['availability'] = "in_stock"
             for field in ['name', 'price', 'category_id', 'image', 'description', 'availability', 'quantity']:
                 if field in data:
                     update_fields.append(f"{field} = %s")
