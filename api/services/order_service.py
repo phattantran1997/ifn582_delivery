@@ -100,10 +100,11 @@ class OrderService(BaseService):
 
             # update product quantity in products table based on cart items quantity
             cur.execute("""
-            UPDATE products
-            SET quantity = quantity - (SELECT quantity FROM cart_items WHERE cart_id = %s)
-            WHERE id IN (SELECT product_id FROM cart_items WHERE cart_id = %s)
-            """, (cart_id, cart_id))
+            UPDATE products p
+            JOIN cart_items ci ON p.id = ci.product_id
+            SET p.quantity = p.quantity - ci.quantity
+            WHERE ci.cart_id = %s
+            """, (cart_id,))
 
             cur.execute("""
             INSERT INTO order_items (order_id, product_id, quantity, price)
