@@ -16,49 +16,76 @@
 {% endblock %}
 {% block content %}
 <main>
-    <div class="container mt-4">
+    <div class="container mt-4 py-5">
         <!-- Categories Filter -->
         <div class="row mb-4">
             <div class="col-12">
                 <h3>Categories</h3>
-                <div class="d-flex flex-wrap gap-2">
-                    <a href="{{ url_for('main.home') }}"
-                        class="btn btn-outline-primary {% if not request.args.get('category') %}active{% endif %}">All</a>
-                    {% for category in categories %}
-                    <a href="{{ url_for('main.home', category=category.name) }}"
-                        class="btn btn-outline-primary {% if request.args.get('category') == category.name %}active{% endif %}">
-                        {{ category.name }}
-                    </a>
-                    {% endfor %}
+                <div id="categoryCarousel" class="carousel slide my-3" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for i in range(0, categories|length, 4) %}
+                        <div class="carousel-item {% if i == 0 %}active{% endif %}">
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="{{ url_for('main.home') }}" class="btn btn-primary btn-sm">All</a>
+                                {% for category in categories[i:i+4] %}
+                                <a href="{{ url_for('main.home', category=category.name) }}"
+                                    class="btn btn-primary btn-sm">
+                                    {{ category.name }}
+                                </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel"
+                        data-bs-slide="prev">
+                        <i class="fas fa-arrow-circle-left fa-3x text-secondary"></i>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#categoryCarousel"
+                        data-bs-slide="next">
+                        <i class="fas fa-arrow-circle-right fa-3x text-secondary"></i>
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- Products Grid -->
-        <div class="row">
+        <!-- Product Grid -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 mb-5">
             {% for product in products %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <a href="{{ url_for('product.get_product', id=product.id) }}" class="text-decoration-none">
-                        <img src="{{ url_for('static', filename=product.image.lstrip('/')) }}" class="card-img-top"
-                            alt="{{ product.name }}">
-                        <div class="card-body">
-                            <h5 class="card-title text-dark">{{ product.name }}</h5>
-                            <p class="card-text text-muted">{{ product.description or '' }}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="h5 mb-0">${{ "%.2f"|format(product.price) }}</span>
+            <a href="{{ url_for('product.get_product', id=product.id) }}" class="text-decoration-none text-dark">
+                <div class="col">
+                    <div class="card h-100 border-primary shadow-sm">
+
+                        <div class="bg-light d-flex justify-content-center align-items-center"
+                            style="height: 180px; border-bottom: 1px solid #e2a90b;">
+                            <img src="{{ url_for('static', filename=product.image.lstrip('/')) }}" class="img-fluid"
+                                style="max-height: 100%; max-width: 100%; object-fit: contain;"
+                                alt="{{ product.name }}">
+                        </div>
+                        <div class="cardbody bg-light">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title fw-semibold mb-2">{{ product.name }}</h5>
+                                <p class="card-text text-muted small mb-3 flex-grow-1">{{ product.description or '' }}
+                                </p>
+                            </div>
+                            <div class="text-center py-2">
+                                <span class="badge bg-primary fs-5">${{ "%.2f"|format(product.price) }}</span>
+                            </div>
+                            <div class="text-center pb-3">
                                 {% if 'user_id' in session %}
                                 {% if product.quantity > 0 %}
-                                <button class="btn btn-primary">Add to Cart</button>
+                                <button class="btn btn-primary w-75 mt-2">Add to Cart</button>
                                 {% else %}
-                                <button class="btn btn-danger" disabled></i>Sold Out</button>
+                                <button class="btn btn-danger w-75 mt-2" disabled><i>Sold Out</i></button>
                                 {% endif %}
                                 {% endif %}
                             </div>
                         </div>
-                    </a>
+                    </div>
+
                 </div>
-            </div>
+            </a>
             {% endfor %}
         </div>
     </div>
