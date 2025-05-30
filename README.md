@@ -58,6 +58,7 @@ WTForms==3.2.1
      - `MYSQL_USER`: MySQL username
      - `MYSQL_PASSWORD`: MySQL password
      - `MYSQL_DB`: Database name
+     - `SECRET_KEY`:your_secret_key (do not need to change)
 
 5. Set up the MySQL database using the `database.sql` file.
 
@@ -68,6 +69,22 @@ WTForms==3.2.1
    python run.py
    ```
 2. Open your web browser and go to http://127.0.0.1:5000 to view the app.
+
+3. Login as admin:
+   - email: admin1@example.com
+   - password: test
+   - email: admin2@example.com
+   - password: test
+
+4. Login as normal user:
+   - email: user1@example.com
+   - password: test
+   - email: user2@example.com
+   - password: test
+   - email: user3@example.com
+   - password: test
+   - email: user4@example.com
+   - password: test
 
 ## 🤝 Contribution Guide
 
